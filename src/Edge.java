@@ -31,9 +31,10 @@ public class Edge implements Comparable<Edge>{
      * @param to the Node where it ends
      */
     Edge(Graph graphHolder, Node from, Node to) {  //
-        if(from == null || to == null || from.getGraph() != to.getGraph()){
+        if(graphHolder == null || from == null || to == null || from.getGraph() != to.getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
         }
+        this.graphHolder = graphHolder;
         this.from = from;
         this.to = to;
         weight = null;
@@ -45,10 +46,11 @@ public class Edge implements Comparable<Edge>{
      * @param to the Node where it ends
      * @param weight the weight of the Edge
      */
-    Edge(Node from, Node to, int weight) {
-        if(from == null || to == null || from.getGraph() != to.getGraph()){
+    Edge(Graph graphHolder, Node from, Node to, int weight) {
+        if(graphHolder == null || from == null || to == null || from.getGraph() != to.getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
         }
+        this.graphHolder = graphHolder;
         this.from = from;
         this.to = to;
         this.weight = weight;
@@ -59,12 +61,14 @@ public class Edge implements Comparable<Edge>{
      * @param from the Node where it begins
      * @param to the Node where it ends
      */
-    Edge(int from, int to) {
-        if(from == null || to == null || from.getGraph() != to.getGraph()){
+    Edge(Graph graphHolder, int from, int to) {
+        if(graphHolder == null || graphHolder.getNode(from) == null || 
+        graphHolder.getNode(to) == null || graphHolder.getNode(from).getGraph() != graphHolder.getNode(to).getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
         }
-        this.from = from;
-        this.to = to;
+        this.graphHolder = graphHolder;
+        this.from = graphHolder.getNode(from);
+        this.to = graphHolder.getNode(to);
         this.weight = null;
     }
 
@@ -73,13 +77,17 @@ public class Edge implements Comparable<Edge>{
      * @param from the Node where it begins
      * @param to the Node where it ends
      * @param weight the weight of the Edge
+     * @throws IllegalArgumentException if any of the arguments are null 
+     * or if the graph of @from is different from the one of @to
      */
-    Edge(int from, int to, int weight) {
-        if(from == null || to == null || from.getGraph() != to.getGraph()){
+    Edge(Graph graphHolder, int from, int to, int weight) {
+        if(graphHolder == null || graphHolder.getNode(from) == null || 
+        graphHolder.getNode(to) == null || graphHolder.getNode(from).getGraph() != graphHolder.getNode(to).getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
         }
-        this.from = from;
-        this.to = to;
+        this.graphHolder = graphHolder;
+        this.from = graphHolder.getNode(from);
+        this.to = graphHolder.getNode(to);
         this.weight = weight;
     }
 
