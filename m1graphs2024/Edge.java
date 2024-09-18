@@ -2,6 +2,7 @@ import java.lang.RuntimeException;
 
 /**
  * The class Edge aims at physically coding edges as object
+ * @author Tristan de Saint Gilles
  */
 public class Edge implements Comparable<Edge>{
     /**
@@ -29,6 +30,8 @@ public class Edge implements Comparable<Edge>{
      * Constructor for a non weighted Edge
      * @param from the Node where it begins
      * @param to the Node where it ends
+     * @throws IllegalArgumentException if any of the arguments are null 
+     * or if the graph of @from is different from the one of @to
      */
     Edge(Graph graphHolder, Node from, Node to) {  //
         if(graphHolder == null || from == null || to == null || from.getGraph() != to.getGraph()){
@@ -45,6 +48,8 @@ public class Edge implements Comparable<Edge>{
      * @param from the Node where it begins
      * @param to the Node where it ends
      * @param weight the weight of the Edge
+     * @throws IllegalArgumentException if any of the arguments are null 
+     * or if the graph of @from is different from the one of @to
      */
     Edge(Graph graphHolder, Node from, Node to, int weight) {
         if(graphHolder == null || from == null || to == null || from.getGraph() != to.getGraph()){
@@ -60,6 +65,8 @@ public class Edge implements Comparable<Edge>{
      * Constructor by ids for a non-weighted Edge
      * @param from the Node where it begins
      * @param to the Node where it ends
+     * @throws IllegalArgumentException if any of the arguments are null 
+     * or if the graph of @from is different from the one of @to
      */
     Edge(Graph graphHolder, int from, int to) {
         if(graphHolder == null || graphHolder.getNode(from) == null || 
