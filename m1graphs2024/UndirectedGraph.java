@@ -1,3 +1,3 @@
-public class UndirectedGraph {
+public class UndirectedGraph extends Graph{
     
 }
