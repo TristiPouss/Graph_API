@@ -1,4 +1,9 @@
+import java.util.*;
+
 public class Node implements Comparable<Node>{
+
+    /* Attributes */
+
     /**
      * 
      * id is an identifier
@@ -18,6 +23,8 @@ public class Node implements Comparable<Node>{
      * graphHolder is a reference to the graph where the node belongs
      */
     private Graph graphHolder;
+
+    /* Constructors */
 
     /**
      * 
@@ -53,6 +60,63 @@ public class Node implements Comparable<Node>{
         this.id = graphHolder.nbNodes();
     }
     
+    /* API */
+
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * The goal is getting a list without duplicates of the successors (or neighbours in the undirected case) of node this. 
+     * This should be overloaded with node id as usual. “Without duplicates” means that each successor appears uniquely in the list returned, even in the case of a multigraph (as opposed to the next method).
+     * @return
+     */
+    List<Node> getSuccessors(){
+        return null;
+    }
+
+    List<Node> getSuccessorsMulti(){
+        return null;
+    }
+
+    boolean adjacent(Node u){
+        return false;
+    }
+
+    int inDegree(Node n){
+        return 0;
+    }
+
+    int outDegree(Node n){
+        return 0;
+    }
+
+    int degree(Node n){
+        return 0;
+    }
+
+    List<Edge> getOutEdges(){
+        return null;
+    }   
+
+    List<Edge> getInEdges(){
+        return null;
+    }
+
+    List<Edge> getIncidentEdges(){
+        return null;
+    }
+
+    List<Edge> getEdgesTo(Node u){
+        return null;
+    }
+
+    Graph getGraph() {
+        return graphHolder;
+    }
+
+    /* Overrides */
+
     /**
      * 
      */
@@ -84,13 +148,12 @@ public class Node implements Comparable<Node>{
     }
 
     /**
-     * To Do 
+     * 
      * @param o
      * @return
      */
     @Override
     public int compareTo(Node o) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'compareTo'");
+        return id - o.id;
     }
 }
