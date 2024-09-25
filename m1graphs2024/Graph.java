@@ -229,8 +229,8 @@ public class Graph {
         if (!usesNode(e.from())) addNode(e.from());
         if (!usesNode(e.to())) addNode(e.to());
 
-        if(e.isWeighted()) adjEdList.get(e.from()).add(new Edge(this, e.from(), e.to(), e.getWeight()));
-        else adjEdList.get(e.from()).add(new Edge(this, e.from(), e.to()));
+        if(!e.isWeighted()) adjEdList.get(e.from()).add(new Edge(this, e.from(), e.to()));
+        else adjEdList.get(e.from()).add(new Edge(this, e.from(), e.to(), e.getWeight()));
     }
 
     /**
@@ -241,7 +241,11 @@ public class Graph {
      *         false else.
      */
     public boolean removeEdge(Node from, Node to){
-        return false;
+        if (!existsEdge(from, to)) return true;
+
+        adjEdList.get(from).remove(new Edge(this, from, to));
+
+        return existsEdge(from, to);
     }
 
     /**
@@ -253,7 +257,11 @@ public class Graph {
      *         false else.
      */
     public boolean removeEdge(Node from, Node to, int weight){
-        return false;
+        if (!existsEdge(from, to)) return true;
+
+        adjEdList.get(from).remove(new Edge(this, from, to, weight));
+
+        return existsEdge(from, to);
     }
 
     /**
@@ -264,7 +272,11 @@ public class Graph {
      *         false else.
      */
     public boolean removeEdge(int from, int to){
-        return false;
+        if (!existsEdge(from, to)) return true;
+
+        adjEdList.get(getNode(from)).remove(new Edge(this, from, to));
+
+        return existsEdge(from, to);
     }
 
     /**
@@ -276,17 +288,26 @@ public class Graph {
      *         false else.
      */
     public boolean removeEdge(int from, int to, int weight){
-        return false;
+        if (!existsEdge(from, to)) return true;
+
+        adjEdList.get(getNode(from)).remove(new Edge(this, from, to, weight));
+
+        return existsEdge(from, to);
     }
 
     /**
-     * Remove the edge between @from and @to from this graph 
+     * Remove the edge @e from this graph 
      * @param e the edge reference to remove
      * @return true if removal was a success
      *         false else.
      */
     public boolean removeEdge(Edge e){
-        return false;
+        if (!existsEdge(e.from(), e.to())) return true;
+
+        if (!e.isWeighted()) adjEdList.get(e.from()).remove(new Edge(this, e.from(), e.to()));
+        else adjEdList.get(e.from()).remove(new Edge(this, e.from(), e.to(), e.getWeight()));
+
+        return existsEdge(e.from(), e.to());
     }
 
     /**
@@ -295,7 +316,8 @@ public class Graph {
      * @return the list of edges leaving the node 
      */
     public List<Edge> getOutEdges(Node n){
-        return null;
+        if (adjEdList.get(n) == null) return new ArrayList<>();
+        return adjEdList.get(n);
     }
 
     /**
@@ -304,7 +326,10 @@ public class Graph {
      * @return the list of edges leaving the node 
      */
     public List<Edge> getOutEdges(int n){
-        return null;
+        if (getNode(n) == null) return new ArrayList<>();
+        Node node = getNode(n);
+        if (adjEdList.get(node) == null) return new ArrayList<>();
+        return adjEdList.get(node);
     }
 
     /**
@@ -313,7 +338,13 @@ public class Graph {
      * @return the list of edges entering the node 
      */
     public List<Edge> getInEdges(Node n){
-        return null;
+        List<Edge> res = new ArrayList<>();
+        for (List<Edge> edges : adjEdList.values()){
+            for (Edge e : edges){
+                if (e.to() == n) res.add(e);
+            }
+        }
+        return res;
     }
 
     /**
@@ -322,7 +353,16 @@ public class Graph {
      * @return the list of edges entering the node 
      */
     public List<Edge> getInEdges(int n){
-        return null;
+        if (getNode(n) == null) return new ArrayList<>();
+        Node node = getNode(n);
+
+        List<Edge> res = new ArrayList<>();
+        for (List<Edge> edges : adjEdList.values()){
+            for (Edge e : edges){
+                if (e.to() == node) res.add(e);
+            }
+        }
+        return res;
     }
 
     /**
@@ -332,7 +372,13 @@ public class Graph {
      * @return the list of edges entering and leaving the node 
      */
     public List<Edge> getIncidentEdges(Node n){
-        return null;
+        List<Edge> res = new ArrayList<>();
+        for (List<Edge> edges : adjEdList.values()){
+            for (Edge e : edges){
+                if (e.to() == n || e.from() == n) res.add(e);
+            }
+        }
+        return res;
     }
 
     /**
@@ -342,7 +388,16 @@ public class Graph {
      * @return the list of edges entering and leaving the node 
      */
     public List<Edge> getIncidentEdges(int n){
-        return null;
+        if (getNode(n) == null) return new ArrayList<>();
+        Node node = getNode(n);
+
+        List<Edge> res = new ArrayList<>();
+        for (List<Edge> edges : adjEdList.values()){
+            for (Edge e : edges){
+                if (e.to() == node || e.from() == node) res.add(e);
+            }
+        }
+        return res;
     }
 
     /**
@@ -354,7 +409,13 @@ public class Graph {
      * @return the list of all edges going from node u to node v. 
      */
     public List<Edge> getEdges(Node u, Node v){
-        return null;
+        List<Edge> res = new ArrayList<>();
+        for (List<Edge> edges : adjEdList.values()){
+            for (Edge e : edges){
+                if (e.from() == u && e.to() == v) res.add(e);
+            }
+        }
+        return res;
     }
 
     /**
@@ -366,7 +427,17 @@ public class Graph {
      * @return the list of all edges going from node u to node v. 
      */
     public List<Edge> getEdges(int u, int v){
-        return null;
+        if (getNode(u) == null || getNode(v) == null) return new ArrayList<>();
+        Node nodeU = getNode(u);
+        Node nodeV = getNode(v);
+
+        List<Edge> res = new ArrayList<>();
+        for (List<Edge> edges : adjEdList.values()){
+            for (Edge e : edges){
+                if (e.from() == nodeU && e.to() == nodeV) res.add(e);
+            }
+        }
+        return res;
     }
 
     /**
