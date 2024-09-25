@@ -71,47 +71,47 @@ public class Node implements Comparable<Node>{
      * This should be overloaded with node id as usual. “Without duplicates” means that each successor appears uniquely in the list returned, even in the case of a multigraph (as opposed to the next method).
      * @return
      */
-    List<Node> getSuccessors(){
-        return null;
+    public List<Node> getSuccessors(){
+        return this.graphHolder.getSuccessors(this);
     }
 
-    List<Node> getSuccessorsMulti(){
-        return null;
+    public List<Node> getSuccessorsMulti(){
+        return this.graphHolder.getSuccessorsMulti(this);
     }
 
-    boolean adjacent(Node u){
-        return false;
+    public boolean adjacent(Node u){
+        return this.graphHolder.adjacent(this, u);
     }
 
-    int inDegree(Node n){
-        return 0;
+    public int inDegree(Node n){
+        return this.graphHolder.inDegree(this);
     }
 
-    int outDegree(Node n){
-        return 0;
+    public int outDegree(Node n){
+        return this.graphHolder.outDegree(this);
     }
 
-    int degree(Node n){
-        return 0;
+    public int degree(Node n){
+        return this.graphHolder.degree(this);
     }
 
-    List<Edge> getOutEdges(){
-        return null;
+    public List<Edge> getOutEdges(){
+        return this.graphHolder.getOutEdges(this);
     }   
 
-    List<Edge> getInEdges(){
-        return null;
+    public List<Edge> getInEdges(){
+        return this.graphHolder.getInEdges(this);
     }
 
-    List<Edge> getIncidentEdges(){
-        return null;
+    public List<Edge> getIncidentEdges(){
+        return this.graphHolder.getIncidentEdges(this);
     }
 
-    List<Edge> getEdgesTo(Node u){
-        return null;
+    public List<Edge> getEdgesTo(Node u){
+        return this.graphHolder.getEdges(this, u);
     }
 
-    Graph getGraph() {
+    public Graph getGraph() {
         return graphHolder;
     }
 
