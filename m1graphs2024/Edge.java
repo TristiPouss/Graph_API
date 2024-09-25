@@ -38,7 +38,7 @@ public class Edge implements Comparable<Edge>{
      * @throws IllegalArgumentException if any of the arguments are null 
      * or if the graph of @from is different from the one of @to
      */
-    Edge(Graph graphHolder, Node from, Node to) {  //
+    public Edge(Graph graphHolder, Node from, Node to) {  //
         if(graphHolder == null || from == null || to == null || from.getGraph() != to.getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
         }
@@ -56,7 +56,7 @@ public class Edge implements Comparable<Edge>{
      * @throws IllegalArgumentException if any of the arguments are null 
      * or if the graph of @from is different from the one of @to
      */
-    Edge(Graph graphHolder, Node from, Node to, int weight) {
+    public Edge(Graph graphHolder, Node from, Node to, int weight) {
         if(graphHolder == null || from == null || to == null || from.getGraph() != to.getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
         }
@@ -73,7 +73,7 @@ public class Edge implements Comparable<Edge>{
      * @throws IllegalArgumentException if any of the arguments are null 
      * or if the graph of @from is different from the one of @to
      */
-    Edge(Graph graphHolder, int from, int to) {
+    public Edge(Graph graphHolder, int from, int to) {
         if(graphHolder == null || graphHolder.getNode(from) == null || 
         graphHolder.getNode(to) == null || graphHolder.getNode(from).getGraph() != graphHolder.getNode(to).getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
@@ -93,7 +93,7 @@ public class Edge implements Comparable<Edge>{
      * if any of the arguments are null or
      * if the graph of @from is different from the one of @to
      */
-    Edge(Graph graphHolder, int from, int to, int weight) {
+    public Edge(Graph graphHolder, int from, int to, int weight) {
         if(graphHolder == null || graphHolder.getNode(from) == null || 
         graphHolder.getNode(to) == null || graphHolder.getNode(from).getGraph() != graphHolder.getNode(to).getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
