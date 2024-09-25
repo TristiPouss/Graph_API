@@ -1,4 +1,3 @@
-import static java.lang.System.in;
 import java.util.*;
 
 public class Graph {
@@ -36,7 +35,11 @@ public class Graph {
 
     /* API */
 
-    /* Nodes related methods */
+    /**************************
+     *                        *
+     * Nodes related methods  *
+     *                        *
+     **************************/
 
     /**
      * @return the number of nodes in the graph
@@ -49,19 +52,27 @@ public class Graph {
         return false;
     }
 
+    public boolean usesNode(int n){
+        return false;
+    }
+
     public boolean holdsNode(Node n){
         return false;
     }
 
     /**
      * @param id an integer
-     * @return the node with the corresponding id
+     * @return the node with the corresponding id or null if it doesnt exist in this graph
      */
     public Node getNode(int id){
         return null;
     }
 
     public boolean addNode(Node n){
+        return false;
+    }
+
+    public boolean addNode(int n){
         return false;
     }
 
@@ -105,7 +116,11 @@ public class Graph {
         return 0;
     }
 
-    /* Edges related methods */
+    /**************************
+     *                        *
+     * Edges related methods  *
+     *                        *
+     **************************/
 
     /**
      * 
@@ -123,7 +138,7 @@ public class Graph {
      *          true else.
      */
     public boolean existsEdge(Node u, Node v){
-        return false;
+        return usesNode(u) && usesNode(v) && adjEdList.containsKey(u) && adjEdList.get(u).contains(new Edge(this, u, v));
     }
 
     /**
@@ -134,7 +149,7 @@ public class Graph {
      *          true else.
      */
     public boolean existsEdge(int u, int v){
-        return false;
+        return usesNode(u) && usesNode(v) && adjEdList.get(getNode(u)).contains(new Edge(this, u, v));
     }
 
     /**
@@ -144,7 +159,7 @@ public class Graph {
      *          false else.
      */
     public boolean existsEdge(Edge e){
-        return false;
+        return usesNode(e.from()) && usesNode(e.to()) && adjEdList.get(e.from()).contains(e);
     }
 
     /**
@@ -154,7 +169,11 @@ public class Graph {
      * @param to a Node
      */
     public void addEdge(Node from, Node to){
+        if (existsEdge(from, to)) return;
+        if (!usesNode(from)) addNode(from);
+        if (!usesNode(to)) addNode(to);
 
+        adjEdList.get(from).add(new Edge(this, from, to));
     }
 
     /**
@@ -165,7 +184,11 @@ public class Graph {
      * @param weight the weight of the edge
      */
     public void addEdge(Node from, Node to, int weight){
+        if (existsEdge(from, to)) return;
+        if (!usesNode(from)) addNode(from);
+        if (!usesNode(to)) addNode(to);
 
+        adjEdList.get(from).add(new Edge(this, from, to, weight));
     }
 
     /**
@@ -175,7 +198,11 @@ public class Graph {
      * @param to a Node id
      */
     public void addEdge(int from, int to){
+        if (existsEdge(from, to)) return;
+        if (!usesNode(from)) addNode(from);
+        if (!usesNode(to)) addNode(to);
 
+        adjEdList.get(getNode(from)).add(new Edge(this, from, to));
     }
 
     /**
@@ -186,43 +213,182 @@ public class Graph {
      * @param weight the weight of the edge
      */
     public void addEdge(int from, int to, int weight){
+        if (existsEdge(from, to)) return;
+        if (!usesNode(from)) addNode(from);
+        if (!usesNode(to)) addNode(to);
 
+        adjEdList.get(getNode(from)).add(new Edge(this, from, to, weight));
     }
 
     /**
-     * Add an edge in the graph, if any Node does not exist, they have to
-     * be created first.
+     * Add an edge in the graph
      * @param e Edge reference
      */
     public void addEdge(Edge e){
+        if (existsEdge(e.from(), e.to())) return;
+        if (!usesNode(e.from())) addNode(e.from());
+        if (!usesNode(e.to())) addNode(e.to());
 
+        if(e.isWeighted()) adjEdList.get(e.from()).add(new Edge(this, e.from(), e.to(), e.getWeight()));
+        else adjEdList.get(e.from()).add(new Edge(this, e.from(), e.to()));
     }
 
+    /**
+     * Remove the edge between @from and @to from this graph 
+     * @param from a Node
+     * @param to a Node
+     * @return true if removal was a success
+     *         false else.
+     */
     public boolean removeEdge(Node from, Node to){
         return false;
     }
 
+    /**
+     * Remove the edge between @from and @to from this graph 
+     * @param from a Node
+     * @param to a Node
+     * @param weight the weight of the edge
+     * @return true if removal was a success
+     *         false else.
+     */
+    public boolean removeEdge(Node from, Node to, int weight){
+        return false;
+    }
+
+    /**
+     * Remove the edge between @from and @to from this graph 
+     * @param from a Node id
+     * @param to a Node id
+     * @return true if removal was a success
+     *         false else.
+     */
+    public boolean removeEdge(int from, int to){
+        return false;
+    }
+
+    /**
+     * Remove the edge between @from and @to from this graph 
+     * @param from a Node id
+     * @param to a Node id
+     * @param weight the weight of the edge
+     * @return true if removal was a success
+     *         false else.
+     */
+    public boolean removeEdge(int from, int to, int weight){
+        return false;
+    }
+
+    /**
+     * Remove the edge between @from and @to from this graph 
+     * @param e the edge reference to remove
+     * @return true if removal was a success
+     *         false else.
+     */
+    public boolean removeEdge(Edge e){
+        return false;
+    }
+
+    /**
+     * For getting the list of edges leaving the Node @n
+     * @param n a Node 
+     * @return the list of edges leaving the node 
+     */
     public List<Edge> getOutEdges(Node n){
         return null;
     }
 
+    /**
+     * For getting the list of edges leaving the Node @n
+     * @param n a Node id
+     * @return the list of edges leaving the node 
+     */
+    public List<Edge> getOutEdges(int n){
+        return null;
+    }
+
+    /**
+     * For getting the list of edges entering the Node @n
+     * @param n a Node 
+     * @return the list of edges entering the node 
+     */
     public List<Edge> getInEdges(Node n){
         return null;
     }
 
+    /**
+     * For getting the list of edges entering the Node @n
+     * @param n a Node id
+     * @return the list of edges entering the node 
+     */
+    public List<Edge> getInEdges(int n){
+        return null;
+    }
+
+    /**
+     * for getting the list of all edges incident to node @n. 
+     * This is the union of the out and in edges
+     * @param n a Node 
+     * @return the list of edges entering and leaving the node 
+     */
     public List<Edge> getIncidentEdges(Node n){
         return null;
     }
 
+    /**
+     * for getting the list of all edges incident to node @n. 
+     * This is the union of the out and in edges
+     * @param n a Node id
+     * @return the list of edges entering and leaving the node 
+     */
+    public List<Edge> getIncidentEdges(int n){
+        return null;
+    }
+
+    /**
+     * for getting the list of all edges going from node u to node v. 
+     * N.B. Theoretically, this is the intersection of the out edges from u and the in edges to v; but computing this intersection
+     * is not efficient so it is better to simply get among the out edges from u the ones that lead to v.
+     * @param u a Node
+     * @param v a Node
+     * @return the list of all edges going from node u to node v. 
+     */
     public List<Edge> getEdges(Node u, Node v){
         return null;
     }
 
-    public List<Edge> getAllEdges(){
+    /**
+     * for getting the list of all edges going from node u to node v. 
+     * N.B. Theoretically, this is the intersection of the out edges from u and the in edges to v; but computing this intersection
+     * is not efficient so it is better to simply get among the out edges from u the ones that lead to v.
+     * @param u a Node id
+     * @param v a Node id
+     * @return the list of all edges going from node u to node v. 
+     */
+    public List<Edge> getEdges(int u, int v){
         return null;
     }
 
-    /* Representation and Transformation methods */
+    /**
+     * for getting the list of all the edges of the graph.
+     * @return the list of all edges in the graph.
+     */
+    public List<Edge> getAllEdges(){
+        List<Edge> res = new ArrayList<>();
+        for (List<Edge> edges : adjEdList.values()) {
+            for (Edge e : edges) {
+                res.add(e);
+            }
+        }
+        return res;
+    }
+
+    /**************************
+     *                        *
+     *   Representation and   *
+     * Transformation methods *
+     *                        *
+     **************************/
 
     public int[] toSuccessorArray(){
         return new int[0];
