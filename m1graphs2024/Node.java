@@ -83,15 +83,19 @@ public class Node implements Comparable<Node>{
         return this.graphHolder.adjacent(this, u);
     }
 
-    public int inDegree(Node n){
-        return this.graphHolder.inDegree(this);
+    public boolean adjacent(int id){
+        return this.graphHolder.adjacent(this.id, id);
     }
 
-    public int outDegree(Node n){
+    public int inDegree(){
+        return this.graphHolder.inDegree(this);
+    }
+    
+    public int outDegree(){
         return this.graphHolder.outDegree(this);
     }
 
-    public int degree(Node n){
+    public int degree(){
         return this.graphHolder.degree(this);
     }
 
