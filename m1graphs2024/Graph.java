@@ -138,7 +138,7 @@ public class Graph {
      *          true else.
      */
     public boolean existsEdge(Node u, Node v){
-        return usesNode(u) && usesNode(v) && adjEdList.containsKey(u) && adjEdList.get(u).contains(new Edge(this, u, v));
+        return holdsNode(u) && holdsNode(v) && adjEdList.containsKey(u) && adjEdList.get(u).contains(new Edge(u, v, this));
     }
 
     /**
@@ -149,7 +149,7 @@ public class Graph {
      *          true else.
      */
     public boolean existsEdge(int u, int v){
-        return usesNode(u) && usesNode(v) && adjEdList.get(getNode(u)).contains(new Edge(this, u, v));
+        return usesNode(u) && usesNode(v) && adjEdList.get(getNode(u)).contains(new Edge(u, v, this));
     }
 
     /**
@@ -159,7 +159,7 @@ public class Graph {
      *          false else.
      */
     public boolean existsEdge(Edge e){
-        return usesNode(e.from()) && usesNode(e.to()) && adjEdList.get(e.from()).contains(e);
+        return holdsNode(e.from()) && holdsNode(e.to()) && adjEdList.get(e.from()).contains(e);
     }
 
     /**
@@ -170,10 +170,10 @@ public class Graph {
      */
     public void addEdge(Node from, Node to){
         if (existsEdge(from, to)) return;
-        if (!usesNode(from)) addNode(from);
-        if (!usesNode(to)) addNode(to);
+        if (!holdsNode(from)) addNode(from);
+        if (!holdsNode(to)) addNode(to);
 
-        adjEdList.get(from).add(new Edge(this, from, to));
+        adjEdList.get(from).add(new Edge(from, to, this));
     }
 
     /**
@@ -185,10 +185,10 @@ public class Graph {
      */
     public void addEdge(Node from, Node to, int weight){
         if (existsEdge(from, to)) return;
-        if (!usesNode(from)) addNode(from);
-        if (!usesNode(to)) addNode(to);
+        if (!holdsNode(from)) addNode(from);
+        if (!holdsNode(to)) addNode(to);
 
-        adjEdList.get(from).add(new Edge(this, from, to, weight));
+        adjEdList.get(from).add(new Edge(from, to, weight, this));
     }
 
     /**
@@ -202,7 +202,7 @@ public class Graph {
         if (!usesNode(from)) addNode(from);
         if (!usesNode(to)) addNode(to);
 
-        adjEdList.get(getNode(from)).add(new Edge(this, from, to));
+        adjEdList.get(getNode(from)).add(new Edge(from, to, this));
     }
 
     /**
@@ -217,7 +217,7 @@ public class Graph {
         if (!usesNode(from)) addNode(from);
         if (!usesNode(to)) addNode(to);
 
-        adjEdList.get(getNode(from)).add(new Edge(this, from, to, weight));
+        adjEdList.get(getNode(from)).add(new Edge(from, to, weight, this));
     }
 
     /**
@@ -226,11 +226,11 @@ public class Graph {
      */
     public void addEdge(Edge e){
         if (existsEdge(e.from(), e.to())) return;
-        if (!usesNode(e.from())) addNode(e.from());
-        if (!usesNode(e.to())) addNode(e.to());
+        if (!holdsNode(e.from())) addNode(e.from());
+        if (!holdsNode(e.to())) addNode(e.to());
 
-        if(!e.isWeighted()) adjEdList.get(e.from()).add(new Edge(this, e.from(), e.to()));
-        else adjEdList.get(e.from()).add(new Edge(this, e.from(), e.to(), e.getWeight()));
+        if(!e.isWeighted()) adjEdList.get(e.from()).add(new Edge(e.from(), e.to(), this));
+        else adjEdList.get(e.from()).add(new Edge(e.from(), e.to(), e.getWeight(), this));
     }
 
     /**
@@ -243,7 +243,7 @@ public class Graph {
     public boolean removeEdge(Node from, Node to){
         if (!existsEdge(from, to)) return true;
 
-        adjEdList.get(from).remove(new Edge(this, from, to));
+        adjEdList.get(from).remove(new Edge(from, to, this));
 
         return existsEdge(from, to);
     }
@@ -259,7 +259,7 @@ public class Graph {
     public boolean removeEdge(Node from, Node to, int weight){
         if (!existsEdge(from, to)) return true;
 
-        adjEdList.get(from).remove(new Edge(this, from, to, weight));
+        adjEdList.get(from).remove(new Edge(from, to, weight, this));
 
         return existsEdge(from, to);
     }
@@ -274,7 +274,7 @@ public class Graph {
     public boolean removeEdge(int from, int to){
         if (!existsEdge(from, to)) return true;
 
-        adjEdList.get(getNode(from)).remove(new Edge(this, from, to));
+        adjEdList.get(getNode(from)).remove(new Edge(from, to, this));
 
         return existsEdge(from, to);
     }
@@ -290,7 +290,7 @@ public class Graph {
     public boolean removeEdge(int from, int to, int weight){
         if (!existsEdge(from, to)) return true;
 
-        adjEdList.get(getNode(from)).remove(new Edge(this, from, to, weight));
+        adjEdList.get(getNode(from)).remove(new Edge(from, to, weight, this));
 
         return existsEdge(from, to);
     }
@@ -304,8 +304,8 @@ public class Graph {
     public boolean removeEdge(Edge e){
         if (!existsEdge(e.from(), e.to())) return true;
 
-        if (!e.isWeighted()) adjEdList.get(e.from()).remove(new Edge(this, e.from(), e.to()));
-        else adjEdList.get(e.from()).remove(new Edge(this, e.from(), e.to(), e.getWeight()));
+        if (!e.isWeighted()) adjEdList.get(e.from()).remove(new Edge(e.from(), e.to(), this));
+        else adjEdList.get(e.from()).remove(new Edge(e.from(), e.to(), e.getWeight(), this));
 
         return existsEdge(e.from(), e.to());
     }
@@ -493,4 +493,68 @@ public class Graph {
         return this;
     }
 
+    /**************************
+     *                        *
+     *     Graph Traversal    *
+     *                        *
+     **************************/
+
+    public List<Node> getDFS(){
+        return null;
+    }
+
+    public List<Node> getDFS(Node u){
+        return null;
+    }
+
+    public List<Node> getDFS(int u){
+        return null;
+    }
+
+    public List<Node> getBFS() {
+        return null;
+    }
+
+    public List<Node> getBFS(Node u) {
+        return null;
+    }
+
+    public List<Node> getBFS(int u) {
+        return null;
+    }
+
+    public List<Node> getDFSWithVisitInfo(Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
+        return null;
+    }
+
+    public List<Node> getDFSWithVisitInfo(Node u, Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
+        return null;
+    }
+
+    /**************************
+     *                        *
+     *      Graph Import      *
+     *       and Export       *
+     *                        *
+     **************************/
+
+    public static Graph fromDotFile(String filename) {
+        return null;
+    }
+
+    public static Graph fromDotFile(String filename, String extension) {
+        return null;
+    }
+
+    public String toDotString() {
+        return "";
+    }
+
+    public void toDotFile(String fileName) {
+
+    }
+
+    public void toDotFile(String fileName, String extension) {
+
+    }
 }

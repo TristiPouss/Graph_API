@@ -38,7 +38,7 @@ public class Edge implements Comparable<Edge>{
      * @throws IllegalArgumentException if any of the arguments are null 
      * or if the graph of @from is different from the one of @to
      */
-    public Edge(Graph graphHolder, Node from, Node to) {  //
+    public Edge(Node from, Node to, Graph graphHolder) {  //
         if(graphHolder == null || from == null || to == null || from.getGraph() != to.getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
         }
@@ -56,7 +56,7 @@ public class Edge implements Comparable<Edge>{
      * @throws IllegalArgumentException if any of the arguments are null 
      * or if the graph of @from is different from the one of @to
      */
-    public Edge(Graph graphHolder, Node from, Node to, int weight) {
+    public Edge(Node from, Node to, int weight, Graph graphHolder) {
         if(graphHolder == null || from == null || to == null || from.getGraph() != to.getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
         }
@@ -73,7 +73,7 @@ public class Edge implements Comparable<Edge>{
      * @throws IllegalArgumentException if any of the arguments are null 
      * or if the graph of @from is different from the one of @to
      */
-    public Edge(Graph graphHolder, int from, int to) {
+    public Edge(int from, int to, Graph graphHolder) {
         if(graphHolder == null || graphHolder.getNode(from) == null || 
         graphHolder.getNode(to) == null || graphHolder.getNode(from).getGraph() != graphHolder.getNode(to).getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
@@ -93,7 +93,7 @@ public class Edge implements Comparable<Edge>{
      * if any of the arguments are null or
      * if the graph of @from is different from the one of @to
      */
-    public Edge(Graph graphHolder, int from, int to, int weight) {
+    public Edge(int from, int to, int weight, Graph graphHolder) {
         if(graphHolder == null || graphHolder.getNode(from) == null || 
         graphHolder.getNode(to) == null || graphHolder.getNode(from).getGraph() != graphHolder.getNode(to).getGraph()){
             throw new IllegalArgumentException("Invalid arguments for edge.");
@@ -115,7 +115,7 @@ public class Edge implements Comparable<Edge>{
     }
 
     public Edge getSymmetric(){
-        return new Edge(this.graphHolder, this.to, this.from);
+        return new Edge(this.to, this.from, this.graphHolder);
     }
 
     public boolean isSelfLoop(){
