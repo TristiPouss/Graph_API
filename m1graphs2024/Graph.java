@@ -45,39 +45,91 @@ public class Graph {
      * @return the number of nodes in the graph
      */
     public int nbNodes(){
-        return adjEdList.size();
+        return adjEdList.keySet().size();
     }
 
+    /**
+     * 
+     * @param n a node 
+     * 
+     * @return true if the id is already used in this graph or false if not
+     */
     public boolean usesNode(Node n){
-        return false;
+        return this.getNode(n.getId()) != null;
     }
 
-    public boolean usesNode(int n){
-        return false;
+    /**
+     * 
+     * @param id a int
+     * 
+     * @return true if the id is used in the graph or false if not
+     */
+    public boolean usesNode(int id){
+        return this.getNode(id) != null;
     }
 
+    /**
+     * 
+     * @param n a node
+     * 
+     * @return true if the node is in the graph or false if not
+     */
     public boolean holdsNode(Node n){
-        return false;
+        return (this.usesNode(n.getId()) && this == n.getGraph());
     }
 
     /**
      * @param id an integer
+     * 
      * @return the node with the corresponding id or null if it doesnt exist in this graph
      */
     public Node getNode(int id){
-        return null;
+        List<Node> allNodes = this.getAllNodes();
+        Node search = new Node(id, this);
+        int isInside = allNodes.indexOf(search);
+        if(isInside == -1){
+            return null;
+        }
+        return allNodes.get(isInside);
     }
 
     public boolean addNode(Node n){
-        return false;
+        if(this.usesNode(n.getId())){
+            return false;
+        }
+        List<Edge> newEdges = new ArrayList<>();
+        adjEdList.put(n, newEdges);
+        return true;
     }
 
     public boolean addNode(int n){
-        return false;
+        if(this.usesNode(n)){
+            return false;
+        }
+        Node newNode = new Node(n, this);
+        List<Edge> newEdges = new ArrayList<>();
+        adjEdList.put(newNode, newEdges);
+        return true;
     }
 
     public boolean removeNode(Node n){
-        return false;
+        if(!this.holdsNode(n)){
+            return false;
+        }
+        List<Edge> allInEdges = getInEdges(n);
+        ListIterator<Edge> inIterator = allInEdges.listIterator();
+        while(inIterator.hasNext()){
+            removeEdge(inIterator.next());
+        }
+        adjEdList.remove(n);
+        return true;
+    }
+
+    public boolean removeNode(int id){
+        if(!this.usesNode(id)){
+            return false;
+        }
+        return true;
     }
 
     public List<Node> getAllNodes(){
@@ -96,7 +148,15 @@ public class Graph {
         return null;
     }
 
+    public List<Node> getSuccessors(int id ){
+        return null;
+    }
+
     public List<Node> getSuccessorsMulti(Node n){
+        return null;
+    }
+
+    public List<Node> getSuccessorsMulti(int id){
         return null;
     }
 
