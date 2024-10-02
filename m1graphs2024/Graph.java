@@ -129,11 +129,21 @@ public class Graph {
         if(!this.usesNode(id)){
             return false;
         }
+        List<Edge> allInEdges = getInEdges(id);
+        ListIterator<Edge> inIterator = allInEdges.listIterator();
+        while(inIterator.hasNext()){
+            removeEdge(inIterator.next());
+        }
+        Node n = new Node(id, this);
+        adjEdList.remove(n);
         return true;
     }
 
     public List<Node> getAllNodes(){
-        return null;
+        Set<Node> keys = adjEdList.keySet();
+        List<Node> allNodes = new ArrayList<>(keys.size());
+        allNodes.addAll(keys);
+        return allNodes;
     }
 
     public int largestNodeId(){
@@ -164,7 +174,15 @@ public class Graph {
         return false;
     }
 
+    public boolean adjacent(int u, int v){
+        return false;
+    }
+
     public int inDegree(Node n){
+        return 0;
+    }
+
+    public int inDegree(int n){
         return 0;
     }
 
@@ -172,7 +190,15 @@ public class Graph {
         return 0;
     }
 
+    public int outDegree(int n){
+        return 0;
+    }
+
     public int degree(Node n){
+        return 0;
+    }
+
+    public int degree(int n){
         return 0;
     }
 
