@@ -93,6 +93,11 @@ public class Graph {
         return allNodes.get(isInside);
     }
 
+    
+    /** 
+     * @param n
+     * @return boolean
+     */
     public boolean addNode(Node n){
         if(this.usesNode(n.getId())){
             return false;
@@ -102,6 +107,11 @@ public class Graph {
         return true;
     }
 
+    
+    /** 
+     * @param n
+     * @return boolean
+     */
     public boolean addNode(int n){
         if(this.usesNode(n)){
             return false;
