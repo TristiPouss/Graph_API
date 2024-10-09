@@ -106,26 +106,51 @@ public class Edge implements Comparable<Edge>{
 
     /* API */
 
+    /**
+     * Get node @from
+     * @return a Node
+     */
     public Node from(){
         return from;
     }
 
+    /**
+     * Get node @to
+     * @return a Node
+     */
     public Node to(){
         return to;
     }
 
+    /**
+     * Get symmetric, reverse @from and @to 
+     * @return a new Edge
+     */
     public Edge getSymmetric(){
-        return new Edge(this.to, this.from, this.graphHolder);
+        if (!isWeighted()) return new Edge(this.to, this.from, this.graphHolder);
+        else return new Edge(this.to, this.from, this.weight, this.graphHolder);
     }
 
+    /**
+     * Check if self loop, @from equals @to
+     * @return true if self loop, false else
+     */
     public boolean isSelfLoop(){
         return this.from.equals(this.to);
     }
 
+    /**
+     * Check if weighht is not null
+     * @return true if weighted, false else
+     */
     public boolean isWeighted(){
         return weight != null;
     }
 
+    /**
+     * Get the weight of the Edge
+     * @return the Integer @weight
+     */
     public Integer getWeight() {
         return weight;
     }
