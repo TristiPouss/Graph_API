@@ -147,59 +147,98 @@ public class Graph {
     }
 
     public int largestNodeId(){
-        return 0;
+        Set<Node> nodes = adjEdList.keySet();
+        Iterator<Node> ite = nodes.iterator();
+        int max = 0;
+        while(ite.hasNext()){
+            Node curr = ite.next();
+            if(curr.getId() > max){
+                max = curr.getId();
+            }
+        }
+        return max;
     }
 
     public int smallestNodeId(){
-        return 0;
+        Set<Node> nodes = adjEdList.keySet();
+        Iterator<Node> ite = nodes.iterator();
+        int min = 0;
+        while(ite.hasNext()){
+            Node curr = ite.next();
+            if(min == 0){
+                min = curr.getId();
+            }else{
+                if(curr.getId() < min){
+                    min = curr.getId();
+                }
+            }
+        }
+        return min;
     }
 
     public List<Node> getSuccessors(Node n){
-        return null;
+        List<Node> result = new ArrayList<>();
+        List<Edge> allEdges = getOutEdges(n);
+        ListIterator<Edge> ite = allEdges.listIterator();
+        while(ite.hasNext()){
+            Edge curr = ite.next();
+            if(result.indexOf(curr.to()) == -1){
+                result.add(curr.to());
+            }
+        }
+        return result;
     }
 
     public List<Node> getSuccessors(int id ){
-        return null;
+        Node n = getNode(id);
+        return getSuccessors(n);
     }
 
     public List<Node> getSuccessorsMulti(Node n){
-        return null;
+        List<Node> result = new ArrayList<>();
+        List<Edge> allEdges = getOutEdges(n);
+        ListIterator<Edge> ite = allEdges.listIterator();
+        while(ite.hasNext()){
+            result.add(ite.next().to());
+        }
+        return result;
     }
 
     public List<Node> getSuccessorsMulti(int id){
-        return null;
+        Node n = getNode(id);
+        return getSuccessorsMulti(n);
     }
 
     public boolean adjacent(Node u, Node v){
-        return false;
+        return existsEdge(u, v);
     }
 
     public boolean adjacent(int u, int v){
-        return false;
+        return existsEdge(u, v);
     }
 
     public int inDegree(Node n){
-        return 0;
+        return getInEdges(n).size();
     }
 
     public int inDegree(int n){
-        return 0;
+        return getInEdges(n).size();
     }
 
     public int outDegree(Node n){
-        return 0;
+        return getOutEdges(n).size();
     }
 
     public int outDegree(int n){
-        return 0;
+        return getOutEdges(n).size();
     }
 
     public int degree(Node n){
-        return 0;
+        return getOutEdges(n).size() + getInEdges(n).size();
     }
 
     public int degree(int n){
-        return 0;
+        return getOutEdges(n).size() + getInEdges(n).size();
     }
 
     /**************************
