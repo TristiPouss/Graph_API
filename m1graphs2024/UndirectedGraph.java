@@ -31,8 +31,11 @@ public class UndirectedGraph extends Graph{
         return (UndirectedGraph) super.getTransitiveClosure();
     }
 
-    /*@Override
     public static UndirectedGraph fromDotFile(String filename) {
-        return (UndirectedGraph) super.fromDotFile(filename);
-    }*/
+        return (UndirectedGraph) Graph.fromDotFile(filename);
+    }
+
+    public static UndirectedGraph fromDotFile(String filename, String extension) {
+        return null;
+    }
 }
