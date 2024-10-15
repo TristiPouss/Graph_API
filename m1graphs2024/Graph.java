@@ -26,12 +26,12 @@ public class Graph {
     public Graph(int ... sa) {
         adjEdList = new HashMap<>();
 
-        addNode(0);
+        addNode(1);
         for (int i = 0; i < sa.length; i++) {
-            if(sa[i] == 0) addNode(i+1);
+            if(sa[i] == 0) addNode(i+2);
             else {
-                if (dev) System.out.println("Adding Edge from " + i + " to " + sa[i]);
-                addEdge(i, sa[i]);
+                if (dev) System.out.println("Adding Edge from " + (i+1) + " to " + sa[i]);
+                addEdge(i+1, sa[i]);
             }
         }
     }
@@ -87,7 +87,8 @@ public class Graph {
      * @return the node with the corresponding id or null if it doesnt exist in this graph
      */
     public Node getNode(int id){
-        List<Node> allNodes = getAllNodes();
+
+        var allNodes = adjEdList.keySet();
         for (Node n : allNodes){
             if (n.getId() == id){
                 return n;
@@ -127,9 +128,7 @@ public class Graph {
             return false;
         }
         if (dev) System.out.println("Adding Node " + n);
-        Node newNode = new Node(n, this);
-        List<Edge> emptyEdgeList = new ArrayList<>();
-        adjEdList.put(newNode, emptyEdgeList);
+        adjEdList.put(new Node(n, this), new ArrayList<>());
         if (dev) System.out.println("Adjacency List : " + adjEdList);
         return true;
     }
@@ -317,8 +316,8 @@ public class Graph {
      */
     public void addEdge(Node from, Node to){
         if (existsEdge(from, to)) return;
-        if (!holdsNode(from)) addNode(from);
-        if (!holdsNode(to)) addNode(to);
+        addNode(from);
+        addNode(to);
 
         adjEdList.get(from).add(new Edge(from, to, this));
     }
@@ -332,8 +331,8 @@ public class Graph {
      */
     public void addEdge(Node from, Node to, int weight){
         if (existsEdge(from, to)) return;
-        if (!holdsNode(from)) addNode(from);
-        if (!holdsNode(to)) addNode(to);
+        addNode(from);
+        addNode(to);
 
         adjEdList.get(from).add(new Edge(from, to, weight, this));
     }
@@ -348,13 +347,7 @@ public class Graph {
         if (existsEdge(from, to)) return;
         addNode(from);
         addNode(to);
-        if (dev) {
-            System.out.println("From : " + getNode(from));
-            System.out.println("To : " + getNode(to));
-            System.out.println("AdjList Get Node From : " + adjEdList.get(getNode(from)));
-        }
-        Edge e = new Edge(from, to, this);
-        adjEdList.get(getNode(from)).add(e);
+        adjEdList.get(getNode(from)).add(new Edge(from, to, this));
     }
 
     /**
@@ -366,8 +359,8 @@ public class Graph {
      */
     public void addEdge(int from, int to, int weight){
         if (existsEdge(from, to)) return;
-        if (!usesNode(from)) addNode(from);
-        if (!usesNode(to)) addNode(to);
+        addNode(from);
+        addNode(to);
 
         adjEdList.get(getNode(from)).add(new Edge(from, to, weight, this));
     }
@@ -378,8 +371,8 @@ public class Graph {
      */
     public void addEdge(Edge e){
         if (existsEdge(e.from(), e.to())) return;
-        if (!holdsNode(e.from())) addNode(e.from());
-        if (!holdsNode(e.to())) addNode(e.to());
+        addNode(e.from());
+        addNode(e.to());
 
         if(!e.isWeighted()) adjEdList.get(e.from()).add(new Edge(e.from(), e.to(), this));
         else adjEdList.get(e.from()).add(new Edge(e.from(), e.to(), e.getWeight(), this));
