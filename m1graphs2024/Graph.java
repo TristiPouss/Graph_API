@@ -1,6 +1,8 @@
 import java.util.*;
 
 public class Graph {
+    public static final boolean dev = false; 
+
     /* Attributes */
 
     /*
@@ -28,6 +30,7 @@ public class Graph {
         for (int i = 0; i < sa.length; i++) {
             if(sa[i] == 0) addNode(i+1);
             else {
+                if (dev) System.out.println("Adding Edge from " + i + " to " + sa[i]);
                 addEdge(i, sa[i]);
             }
         }
@@ -75,7 +78,7 @@ public class Graph {
      * @return true if the node is in the graph or false if not
      */
     public boolean holdsNode(Node n){
-        return (this.usesNode(n.getId()) && this == n.getGraph());
+        return (this.usesNode(n) && this == n.getGraph());
     }
 
     /**
@@ -84,13 +87,20 @@ public class Graph {
      * @return the node with the corresponding id or null if it doesnt exist in this graph
      */
     public Node getNode(int id){
-        List<Node> allNodes = this.getAllNodes();
+        List<Node> allNodes = getAllNodes();
+        for (Node n : allNodes){
+            if (n.getId() == id){
+                return n;
+            }
+        }
+        return null;
+        /*List<Node> allNodes = this.getAllNodes();
         Node search = new Node(id, this);
         int isInside = allNodes.indexOf(search);
         if(isInside == -1){
             return null;
         }
-        return allNodes.get(isInside);
+        return allNodes.get(isInside);*/
     }
 
     
@@ -99,11 +109,11 @@ public class Graph {
      * @return boolean
      */
     public boolean addNode(Node n){
-        if(this.usesNode(n.getId())){
+        if(this.usesNode(n)){
             return false;
         }
-        List<Edge> newEdges = new ArrayList<>();
-        adjEdList.put(n, newEdges);
+        List<Edge> emptyEdgeList = new ArrayList<>();
+        adjEdList.put(n, emptyEdgeList);
         return true;
     }
 
@@ -116,9 +126,11 @@ public class Graph {
         if(this.usesNode(n)){
             return false;
         }
+        if (dev) System.out.println("Adding Node " + n);
         Node newNode = new Node(n, this);
-        List<Edge> newEdges = new ArrayList<>();
-        adjEdList.put(newNode, newEdges);
+        List<Edge> emptyEdgeList = new ArrayList<>();
+        adjEdList.put(newNode, emptyEdgeList);
+        if (dev) System.out.println("Adjacency List : " + adjEdList);
         return true;
     }
 
@@ -334,10 +346,15 @@ public class Graph {
      */
     public void addEdge(int from, int to){
         if (existsEdge(from, to)) return;
-        if (!usesNode(from)) addNode(from);
-        if (!usesNode(to)) addNode(to);
-
-        adjEdList.get(getNode(from)).add(new Edge(from, to, this));
+        addNode(from);
+        addNode(to);
+        if (dev) {
+            System.out.println("From : " + getNode(from));
+            System.out.println("To : " + getNode(to));
+            System.out.println("AdjList Get Node From : " + adjEdList.get(getNode(from)));
+        }
+        Edge e = new Edge(from, to, this);
+        adjEdList.get(getNode(from)).add(e);
     }
 
     /**

@@ -133,10 +133,7 @@ public class Node implements Comparable<Node>{
             return false;
         }
         Node other = (Node) obj;
-        if(this.id == other.id && this.graphHolder.equals(other.graphHolder)){
-            return true;
-        }
-        return false;
+        return this.id == other.id && this.graphHolder.equals(other.graphHolder);
     }
 
     /**
