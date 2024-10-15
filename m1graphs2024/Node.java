@@ -142,9 +142,7 @@ public class Node implements Comparable<Node>{
     @Override
     public int hashCode(){
         int hash = 1;
-        hash = this.id * hash;
-        hash = hash * 13 + this.graphHolder.nbNodes();
-        hash = hash * 17 + (this.name == null? 0 : this.name.hashCode());
+        hash = hash * 17 + this.id;
         return hash;
     }
 
