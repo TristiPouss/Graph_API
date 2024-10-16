@@ -28,7 +28,7 @@ public class Graph {
 
         int x = 1;
         addNode(1);
-        for (int i = 0; i < sa.length; i++) {
+        for (int i = 0; i < sa.length-1; i++) {
             if(sa[i] == 0) {
                 x++;
                 addNode(x);
@@ -618,7 +618,30 @@ public class Graph {
      **************************/
 
     public int[] toSuccessorArray(){
-        return new int[0];
+        int[] result = new int[nbEdges() + nbNodes()];
+        int compteur = 0;
+        Set<Node> keys = adjEdList.keySet();
+        for (Node curr : keys) {
+            List<Edge> successors = adjEdList.get(curr);
+            Iterator<Edge> iteEdge = successors.iterator();
+            while(iteEdge.hasNext()){
+                result[compteur] = iteEdge.next().to().getId();
+                compteur++;
+            }
+            result[compteur] = 0;
+            compteur++;
+        }
+
+        if(dev){
+            System.out.print("Print of the successor array : [");
+            int ite = 0;
+            for(; ite < result.length; ite++){
+                System.out.print(result[ite] + " | ");
+            }
+            System.out.print("]");
+        }
+
+        return result;
     }
 
     public int[][] toAdjMatrix(){
