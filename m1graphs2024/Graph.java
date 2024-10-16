@@ -26,12 +26,16 @@ public class Graph {
     public Graph(int ... sa) {
         adjEdList = new HashMap<>();
 
+        int x = 1;
         addNode(1);
         for (int i = 0; i < sa.length; i++) {
-            if(sa[i] == 0) addNode(i+2);
+            if(sa[i] == 0) {
+                x++;
+                addNode(x);
+            }
             else {
-                if (dev) System.out.println("Adding Edge from " + (i+1) + " to " + sa[i]);
-                addEdge(i+1, sa[i]);
+                if (dev) System.out.println("Adding Edge from " + (x+1) + " to " + sa[i]);
+                addEdge(x, sa[i]);
             }
         }
     }
@@ -273,7 +277,14 @@ public class Graph {
      * @return the number of edges in this graph
      */
     public int nbEdges() {
-        return adjEdList.values().size();
+        int size = 0;
+        for (var l : adjEdList.values()){
+            for (Edge e : l){
+                if (dev) System.out.println(e.from().getId());
+                size ++;
+            }
+        }
+        return size;
     }
 
     /**
