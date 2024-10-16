@@ -181,6 +181,7 @@ public class Edge implements Comparable<Edge>{
         hash = 31 * hash * (this.from != null ? this.from.hashCode() : 0);
         hash = 31 * hash * (this.to != null ? this.to.hashCode() : 0);
         hash = 31 * hash * (isWeighted() ? this.weight : 0);
+        hash = 31 * hash * (this.graphHolder != null ? this.graphHolder.hashCode() : 0);
         return hash;
     }
 
