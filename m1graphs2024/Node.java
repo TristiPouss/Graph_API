@@ -10,7 +10,7 @@ public class Node implements Comparable<Node>{
      * Two nodes in the same graph can't have the same id
      * Two nodes in different graphs can have the same id 
      */
-    private int id;
+    private final int id;
 
     /**
      * 
@@ -22,11 +22,12 @@ public class Node implements Comparable<Node>{
      * 
      * graphHolder is a reference to the graph where the node belongs
      */
-    private Graph graphHolder;
+    private final Graph graphHolder;
 
     /* Constructors */
 
     /**
+     * Constructor for a node without a name
      * 
      * @param id            The id of the Node
      * @param graphHolder   The reference to the graph where the node will belongs
@@ -40,10 +41,14 @@ public class Node implements Comparable<Node>{
     }
     
     /**
+     * Constructor for a node with a name
      * 
      * @param id
      * @param name
      * @param graphHolder
+     * 
+     * If the graph already contain a Node with this id the node isn't created. 
+     * If the graph don't have the id, the programm create a node and add it to the graph
      */
     public Node(int id, String name, Graph graphHolder){
         this.id = id;
@@ -52,12 +57,15 @@ public class Node implements Comparable<Node>{
     }
 
     /**
+     * Constructor for a node without a name and the id specified
      * 
      * @param graphHolder
+     * 
+     * Create a node in the graph with the addition between the largest node id in the graph and 1 as the id.
      */
     public Node(Graph graphHolder){
         this.graphHolder = graphHolder;
-        this.id = graphHolder.nbNodes();
+        this.id = graphHolder.largestNodeId() + 1;
     }
     
     /* API */
@@ -67,18 +75,30 @@ public class Node implements Comparable<Node>{
     }
 
     /**
-     * The goal is getting a list without duplicates of the successors (or neighbours in the undirected case) of node this. 
-     * This should be overloaded with node id as usual. “Without duplicates” means that each successor appears uniquely in the list returned, even in the case of a multigraph (as opposed to the next method).
-     * @return
+     * The goal is getting a list without duplicates of the successors (or neighbours in the undirected case) of node this.
+     * 
+     * @return a list of all the successors without duplicate
      */
     public List<Node> getSuccessors(){
         return this.graphHolder.getSuccessors(this);
     }
 
+    /**
+     * The goal is getting a list with possible duplicates of the successors (or neighbours in the undirected case) of node this. 
+     * 
+     * @return a list of all the successors with possible duplicates
+     */
     public List<Node> getSuccessorsMulti(){
         return this.graphHolder.getSuccessorsMulti(this);
     }
 
+    /**
+     * Test if a Node is adjacent to this node. 
+     * 
+     * @param u is a node 
+     *
+     * @return
+     */
     public boolean adjacent(Node u){
         return this.graphHolder.adjacent(this, u);
     }
@@ -133,10 +153,7 @@ public class Node implements Comparable<Node>{
             return false;
         }
         Node other = (Node) obj;
-        if(this.id == other.id && this.graphHolder.equals(other.graphHolder)){
-            return true;
-        }
-        return false;
+        return this.id == other.id && this.graphHolder.equals(other.graphHolder);
     }
 
     /**
