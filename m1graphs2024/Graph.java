@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Graph {
-    public static final boolean dev = false; 
+    public static final boolean dev = true; 
 
     /* Attributes */
 
@@ -27,15 +27,14 @@ public class Graph {
         adjEdList = new HashMap<>();
 
         int x = 1;
-        addNode(1);
         for (int i = 0; i < sa.length; i++) {
-            if(sa[i] == 0) {
-                x++;
-                addNode(x);
-            }
-            else {
+            addNode(x);
+            if(sa[i] != 0) {
                 if (dev) System.out.println("Adding Edge from " + (x+1) + " to " + sa[i]);
                 addEdge(x, sa[i]);
+            }
+            else {
+                x++;
             }
         }
     }
@@ -622,15 +621,44 @@ public class Graph {
     }
 
     public int[][] toAdjMatrix(){
-        return new int[0][0];
+        int[][] adjMatrix = new int[nbNodes()][nbNodes()];
+        for (Edge e : getAllEdges()){
+            adjMatrix[e.from().getId()-1][e.to().getId()-1]++;
+        }
+        if (dev) {
+            for (int row = 0; row < nbNodes(); row++){
+                System.out.println("");
+                for (int col = 0; col < nbNodes(); col++){
+                    System.out.print(adjMatrix[row][col] + " ");
+                }   
+            }
+            System.out.println("");
+        }
+        return adjMatrix;
     }
 
     public Graph getReverse(){
-        return this;
+        Graph reverse = new Graph();
+
+        for (Node n : getAllNodes()) {
+            reverse.addNode(n);
+        }
+
+        for (Edge e : getAllEdges()) {
+            reverse.addEdge(e.getSymmetric());
+        }
+
+        return reverse;
     }
 
     public Graph getTransitiveClosure(){
-        return this;
+        Graph transClosure = this.copy();
+
+        for (Node n : transClosure.getAllNodes()){
+            List<Node> visited = new ArrayList<>();
+        }
+
+        return transClosure;
     }
 
     public boolean isMultiGraph(){
@@ -646,7 +674,17 @@ public class Graph {
     }
 
     public Graph copy(){
-        return this;
+        Graph copy = new Graph();
+
+        for (Node n : getAllNodes()) {
+            copy.addNode(n);
+        }
+
+        for (Edge e : getAllEdges()) {
+            copy.addEdge(e);
+        }
+
+        return copy;
     }
 
     /**************************
@@ -703,7 +741,14 @@ public class Graph {
     }
 
     public String toDotString() {
-        return "";
+        String dotString = "digraph G {";
+
+        for (Edge e : getAllEdges()){
+            dotString += "\n\t" + e.from().getId() + " -> " +e.to().getId();
+        }
+
+        dotString += "\n}";
+        return dotString;
     }
 
     public void toDotFile(String fileName) {
