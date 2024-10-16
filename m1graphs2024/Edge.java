@@ -106,26 +106,51 @@ public class Edge implements Comparable<Edge>{
 
     /* API */
 
+    /**
+     * Get node @from
+     * @return a Node
+     */
     public Node from(){
         return from;
     }
 
+    /**
+     * Get node @to
+     * @return a Node
+     */
     public Node to(){
         return to;
     }
 
+    /**
+     * Get symmetric, reverse @from and @to 
+     * @return a new Edge
+     */
     public Edge getSymmetric(){
-        return new Edge(this.to, this.from, this.graphHolder);
+        if (!isWeighted()) return new Edge(this.to, this.from, this.graphHolder);
+        else return new Edge(this.to, this.from, this.weight, this.graphHolder);
     }
 
+    /**
+     * Check if self loop, @from equals @to
+     * @return true if self loop, false else
+     */
     public boolean isSelfLoop(){
         return this.from.equals(this.to);
     }
 
+    /**
+     * Check if weighht is not null
+     * @return true if weighted, false else
+     */
     public boolean isWeighted(){
         return weight != null;
     }
 
+    /**
+     * Get the weight of the Edge
+     * @return the Integer @weight
+     */
     public Integer getWeight() {
         return weight;
     }
@@ -144,7 +169,7 @@ public class Edge implements Comparable<Edge>{
         Edge other = (Edge) obj;
 
         return from == other.from && to == other.to  && 
-                ((weight == null && other.weight == null) || Objects.equals(weight, other.weight));
+                ((!isWeighted() && !other.isWeighted()) || Objects.equals(weight, other.weight));
     }
 
     /**
@@ -155,7 +180,7 @@ public class Edge implements Comparable<Edge>{
         int hash = 5;
         hash = 31 * hash * (this.from != null ? this.from.hashCode() : 0);
         hash = 31 * hash * (this.to != null ? this.to.hashCode() : 0);
-        hash = 31 * hash * (this.weight != null ? this.weight : 0);
+        hash = 31 * hash * (isWeighted() ? this.weight : 0);
         return hash;
     }
 
@@ -168,7 +193,7 @@ public class Edge implements Comparable<Edge>{
 	public int compareTo(Edge o) {
         if (from.getId() != o.from.getId()) return from.getId() - o.from.getId();
         if (to.getId() != o.to.getId()) return to.getId() - o.to.getId(); 
-        if (weight != null && o.weight != null && weight != o.weight) return weight - o.weight;
+        if (isWeighted() && o.isWeighted() && !Objects.equals(weight, o.weight)) return weight - o.weight;
         return 0;
 	}
 }
