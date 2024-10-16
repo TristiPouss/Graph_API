@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.*;
 
 public class Graph {
@@ -30,7 +31,7 @@ public class Graph {
         for (int i = 0; i < sa.length; i++) {
             addNode(x);
             if(sa[i] != 0) {
-                if (dev) System.out.println("Adding Edge from " + (x+1) + " to " + sa[i]);
+                if (dev) System.out.println("Adding Edge from " + (x) + " to " + sa[i]);
                 addEdge(x, sa[i]);
             }
             else {
@@ -654,8 +655,20 @@ public class Graph {
     public Graph getTransitiveClosure(){
         Graph transClosure = this.copy();
 
-        for (Node n : transClosure.getAllNodes()){
+        for (Node origin : transClosure.getAllNodes()){
             List<Node> visited = new ArrayList<>();
+            Queue<Node> toVisit = new PriorityQueue<>();
+            toVisit.add(origin);
+            while (!toVisit.isEmpty()) {
+                Node current = toVisit.remove();
+                if(!visited.contains(current)){
+                    for (Edge e : transClosure.adjEdList.get(current)){
+                        addEdge(origin.getId(), e.to().getId());
+                        toVisit.add(e.to());
+                    }
+                    visited.add(current);
+                }
+            }
         }
 
         return transClosure;
@@ -751,11 +764,26 @@ public class Graph {
         return dotString;
     }
 
-    public void toDotFile(String fileName) {
-
+    public void toDotFile(String fileName) throws IOException {
+        toDotFile(fileName, ".gv");
     }
 
     public void toDotFile(String fileName, String extension) {
-
+        fileName += extension;
+        try {
+            File dotFile = new File(fileName);
+            dotFile.createNewFile();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        try {
+            FileWriter dotFileWriter = new FileWriter(fileName);
+            dotFileWriter.write(toDotString());
+            dotFileWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
     }
 }
