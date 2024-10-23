@@ -25,6 +25,8 @@ public class UndirectedGraph extends Graph{
         super(sa);
     }
 
+    // Redefine Add Edge to have both edge and symmetric in the undirected
+
     @Override
     public UndirectedGraph getTransitiveClosure() {
         return (UndirectedGraph) super.getTransitiveClosure();
