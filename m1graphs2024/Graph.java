@@ -687,7 +687,7 @@ public class Graph {
                 Node current = toVisit.remove();
                 if(!visited.contains(current)){
                     for (Edge e : transClosure.adjEdList.get(current)){
-                        addEdge(origin.getId(), e.to().getId());
+                        transClosure.addEdge(origin.getId(), e.to().getId());
                         toVisit.add(e.to());
                     }
                     visited.add(current);
@@ -746,11 +746,13 @@ public class Graph {
         Graph copy = new Graph();
 
         for (Node n : getAllNodes()) {
-            copy.addNode(n);
+            copy.addNode(new Node(n.getId(), copy));
         }
 
         for (Edge e : getAllEdges()) {
-            copy.addEdge(e);
+            if (!e.isWeighted()) copy.addEdge(new Edge(e.from(), e.from(), copy));
+            else copy.addEdge(new Edge(e.from(), e.from(), e.getWeight(), copy));
+            
         }
 
         return copy;
@@ -763,10 +765,12 @@ public class Graph {
      **************************/
 
     public List<Node> getDFS(){
-        return null;
+        return getDFS();
     }
 
     public List<Node> getDFS(Node u){
+        List<Node> visited = new ArrayList<>();
+        Queue<Node> toVisit = new PriorityQueue<>();
         return null;
     }
 
