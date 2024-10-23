@@ -30,7 +30,7 @@ public class Graph {
         for (int i = 0; i < sa.length; i++) {
             addNode(x);
             if(sa[i] != 0) {
-                if (dev) System.out.println("Adding Edge from " + (x+1) + " to " + sa[i]);
+                if (dev) System.out.println("Adding Edge from " + (x) + " to " + sa[i]);
                 addEdge(x, sa[i]);
             }
             else {
@@ -167,6 +167,7 @@ public class Graph {
         Set<Node> keys = adjEdList.keySet();
         List<Node> allNodes = new ArrayList<>(keys.size());
         allNodes.addAll(keys);
+        Collections.sort(allNodes);
         return allNodes;
     }
 
@@ -606,6 +607,7 @@ public class Graph {
                 res.add(e);
             }
         }
+        Collections.sort(res);
         return res;
     }
 
@@ -619,8 +621,8 @@ public class Graph {
     public int[] toSuccessorArray(){
         int[] result = new int[nbEdges() + nbNodes()];
         int compteur = 0;
-        Set<Node> keys = adjEdList.keySet();
-        for (Node curr : keys) {
+        for (Node curr : getAllNodes()) {
+            System.out.println("Node : " + curr.getId());
             List<Edge> successors = adjEdList.get(curr);
             Iterator<Edge> iteEdge = successors.iterator();
             while(iteEdge.hasNext()){
@@ -685,10 +687,27 @@ public class Graph {
     }
 
     public boolean isMultiGraph(){
+        List<Edge> allEdges = new ArrayList<>();
+        for(Edge e : getAllEdges()){
+            Edge newEdge = new Edge(e.from(), e.to(), this);
+            if(allEdges.contains(newEdge)){
+                return true;
+            }
+            allEdges.add(newEdge);
+        }
         return false;
     }
 
+    public boolean isSimpleGraph(){
+        return !(isMultiGraph() || hasSelfLoops());
+    }
+
     public boolean hasSelfLoops(){
+        for(Edge e : getAllEdges()){
+            if(e.from().equals(e.to())){
+                return true;
+            }
+        }
         return false;
     }
 
