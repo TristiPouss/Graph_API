@@ -751,17 +751,33 @@ public class Graph {
      **************************/
 
     public List<Node> getDFS(){
-        return getDFS();
+        return getDFS(getAllNodes().get(0));
     }
 
     public List<Node> getDFS(Node u){
         List<Node> visited = new ArrayList<>();
-        Queue<Node> toVisit = new PriorityQueue<>();
-        return null;
+        Stack<Node> toVisit = new Stack<>();
+        toVisit.add(u);
+        while (!toVisit.isEmpty()) {
+            Node current = toVisit.pop();
+            if (dev) System.out.println("Visiting " + current);
+            if (dev) System.out.println(toVisit);
+            visited.add(current);
+            List<Edge> l = adjEdList.get(current);
+            l.sort(Comparator.reverseOrder());
+            for(Edge e : l){
+                if(!visited.contains(e.to())){
+                    toVisit.add(e.to());
+                    if (dev) System.out.println("Adding to visit " + e.to());
+                    if (dev) System.out.println(toVisit);
+                }
+            }
+        }
+        return visited;
     }
 
     public List<Node> getDFS(int u){
-        return null;
+        return getDFS(this.getNode(u));
     }
 
     public List<Node> getBFS() {
