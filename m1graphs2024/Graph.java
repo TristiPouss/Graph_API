@@ -760,16 +760,14 @@ public class Graph {
         toVisit.add(u);
         while (!toVisit.isEmpty()) {
             Node current = toVisit.pop();
-            if (dev) System.out.println("Visiting " + current);
-            if (dev) System.out.println(toVisit);
             visited.add(current);
-            List<Edge> l = adjEdList.get(current);
-            l.sort(Comparator.reverseOrder());
-            for(Edge e : l){
+            List<Edge> li = adjEdList.get(current);
+            li.sort(Comparator.reverseOrder());
+            for(Edge e : li){
                 if(!visited.contains(e.to())){
+                    // Put e.to() to the top of the toVisit stack
+                    toVisit.remove(e.to());
                     toVisit.add(e.to());
-                    if (dev) System.out.println("Adding to visit " + e.to());
-                    if (dev) System.out.println(toVisit);
                 }
             }
         }
@@ -833,18 +831,11 @@ public class Graph {
     public void toDotFile(String fileName, String extension) {
         fileName += extension;
         try {
-            File dotFile = new File(fileName);
-            dotFile.createNewFile();
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-        try {
             FileWriter dotFileWriter = new FileWriter(fileName);
             dotFileWriter.write(toDotString());
             dotFileWriter.close();
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred. Could not create the file.");
             e.printStackTrace();
         }
     }
