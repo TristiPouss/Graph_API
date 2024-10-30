@@ -678,17 +678,19 @@ public class Graph {
     }
 
     public Graph getTransitiveClosure(){
-        Graph transClosure = this.copy();
+        Graph transClosure = new Graph();
 
-        for (Node origin : transClosure.getAllNodes()){
+        for (Node origin : getAllNodes()){
             List<Node> visited = new ArrayList<>();
-            Queue<Node> toVisit = new PriorityQueue<>();
+            Stack<Node> toVisit = new Stack<>();
             toVisit.add(origin);
+            transClosure.addNode(origin.getId());
             while (!toVisit.isEmpty()) {
-                Node current = toVisit.remove();
+                Node current = toVisit.pop();
                 if(!visited.contains(current)){
-                    for (Edge e : transClosure.adjEdList.get(current)){
+                    for (Edge e : adjEdList.get(current)){
                         transClosure.addEdge(origin.getId(), e.to().getId());
+                        toVisit.remove(e.to());
                         toVisit.add(e.to());
                     }
                     visited.add(current);
@@ -736,8 +738,8 @@ public class Graph {
         }
 
         for (Edge e : getAllEdges()) {
-            if (!e.isWeighted()) copy.addEdge(new Edge(e.from(), e.from(), copy));
-            else copy.addEdge(new Edge(e.from(), e.from(), e.getWeight(), copy));
+            if (!e.isWeighted()) copy.addEdge(new Edge(e.from(), e.to(), copy));
+            else copy.addEdge(new Edge(e.from(), e.to(), e.getWeight(), copy));
             
         }
 
@@ -817,7 +819,7 @@ public class Graph {
         String dotString = "digraph G {";
 
         for (Edge e : getAllEdges()){
-            dotString += "\n\t" + e.from().getId() + " -> " +e.to().getId();
+            dotString += "\n\t" + e.toString();
         }
 
         dotString += "\n}";
