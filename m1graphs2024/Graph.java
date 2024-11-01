@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Graph {
-    public static final boolean dev = true; 
+    public static final boolean dev = false; 
 
     /* Attributes */
 
@@ -99,13 +99,6 @@ public class Graph {
             }
         }
         return null;
-        /*List<Node> allNodes = this.getAllNodes();
-        Node search = new Node(id, this);
-        int isInside = allNodes.indexOf(search);
-        if(isInside == -1){
-            return null;
-        }
-        return allNodes.get(isInside);*/
     }
 
     
@@ -327,7 +320,6 @@ public class Graph {
      * @param to a Node
      */
     public void addEdge(Node from, Node to){
-        // if (existsEdge(from, to)) return;
         addNode(from);
         addNode(to);
 
@@ -342,7 +334,6 @@ public class Graph {
      * @param weight the weight of the edge
      */
     public void addEdge(Node from, Node to, int weight){
-        // if (existsEdge(from, to)) return;
         addNode(from);
         addNode(to);
 
@@ -356,7 +347,6 @@ public class Graph {
      * @param to a Node id
      */
     public void addEdge(int from, int to){
-        // if (existsEdge(from, to)) return;
         addNode(from);
         addNode(to);
         adjEdList.get(getNode(from)).add(new Edge(from, to, this));
@@ -370,7 +360,6 @@ public class Graph {
      * @param weight the weight of the edge
      */
     public void addEdge(int from, int to, int weight){
-        // if (existsEdge(from, to)) return;
         addNode(from);
         addNode(to);
 
@@ -382,7 +371,6 @@ public class Graph {
      * @param e Edge reference
      */
     public void addEdge(Edge e){
-        // if (existsEdge(e.from(), e.to())) return;
         addNode(e.from());
         addNode(e.to());
 
@@ -461,7 +449,7 @@ public class Graph {
     public boolean removeEdge(Edge e){
         if (!existsEdge(e.from(), e.to())) return false;
 
-        adjEdList.remove(e.from(), e);
+        adjEdList.get(e.from()).remove(e);
 
         return true;
     }
@@ -726,16 +714,21 @@ public class Graph {
     public Graph toSimpleGraph(){
         Graph result = this.copy();
         List<Edge> visited = new ArrayList<>();
-        for(Edge e : getAllEdges()){
-            if(e.to().getId() == e.from().getId()){
+        boolean delete = false;
+        for(Edge e : result.getAllEdges()){
+            if(e.to() == e.from()){
                 result.removeEdge(e);
             }else{
                 for(Edge e1 : visited){
                     if(e.from() == e1.from() && e.to() == e1.to()){
                         result.removeEdge(e);
-                    }else{
-                        visited.add(e);
+                        delete = true;
                     }
+                }
+                if(delete){
+                    delete = false;
+                }else{
+                    visited.add(e);
                 }
             }
         }
@@ -750,9 +743,8 @@ public class Graph {
         }
 
         for (Edge e : getAllEdges()) {
-            if (!e.isWeighted()) copy.addEdge(new Edge(e.from(), e.from(), copy));
-            else copy.addEdge(new Edge(e.from(), e.from(), e.getWeight(), copy));
-            
+            if (!e.isWeighted()) copy.addEdge(new Edge(copy.getNode(e.from().getId()), copy.getNode(e.to().getId()), copy));
+            else copy.addEdge(new Edge(copy.getNode(e.from().getId()), copy.getNode(e.to().getId()), e.getWeight(), copy));            
         }
 
         return copy;
@@ -765,10 +757,16 @@ public class Graph {
      **************************/
 
     public List<Node> getDFS(){
+        if(getAllNodes().isEmpty()){
+            return null;
+        }
         return getDFS(getAllNodes().get(0));
     }
 
     public List<Node> getDFS(Node u){
+        if(u == null){
+            return null;
+        }
         List<Node> visited = new ArrayList<>();
         Stack<Node> toVisit = new Stack<>();
         toVisit.add(u);
