@@ -176,4 +176,11 @@ public class Node implements Comparable<Node>{
     public int compareTo(Node o) {
         return id - o.id;
     }
+
+    @Override
+    public String toString() {
+        return "" + id;
+    }
+
+    
 }

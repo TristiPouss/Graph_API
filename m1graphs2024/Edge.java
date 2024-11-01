@@ -197,4 +197,11 @@ public class Edge implements Comparable<Edge>{
         if (isWeighted() && o.isWeighted() && !Objects.equals(weight, o.weight)) return weight - o.weight;
         return 0;
 	}
+
+    @Override
+    public String toString() {
+        return from + " -> " + to;
+    }
+
+    
 }

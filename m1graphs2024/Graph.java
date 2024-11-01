@@ -765,17 +765,31 @@ public class Graph {
      **************************/
 
     public List<Node> getDFS(){
-        return getDFS();
+        return getDFS(getAllNodes().get(0));
     }
 
     public List<Node> getDFS(Node u){
         List<Node> visited = new ArrayList<>();
-        Queue<Node> toVisit = new PriorityQueue<>();
-        return null;
+        Stack<Node> toVisit = new Stack<>();
+        toVisit.add(u);
+        while (!toVisit.isEmpty()) {
+            Node current = toVisit.pop();
+            visited.add(current);
+            List<Edge> li = adjEdList.get(current);
+            li.sort(Comparator.reverseOrder());
+            for(Edge e : li){
+                if(!visited.contains(e.to())){
+                    // Put e.to() to the top of the toVisit stack
+                    toVisit.remove(e.to());
+                    toVisit.add(e.to());
+                }
+            }
+        }
+        return visited;
     }
 
     public List<Node> getDFS(int u){
-        return null;
+        return getDFS(this.getNode(u));
     }
 
     public List<Node> getBFS() {
@@ -831,18 +845,11 @@ public class Graph {
     public void toDotFile(String fileName, String extension) {
         fileName += extension;
         try {
-            File dotFile = new File(fileName);
-            dotFile.createNewFile();
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-        try {
             FileWriter dotFileWriter = new FileWriter(fileName);
             dotFileWriter.write(toDotString());
             dotFileWriter.close();
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred. Could not create the file.");
             e.printStackTrace();
         }
     }
