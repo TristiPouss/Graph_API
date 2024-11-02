@@ -3,6 +3,7 @@ import java.util.*;
 
 public class Graph {
     public static final boolean dev = false; 
+    static int time = 0;
 
     /* Attributes */
 
@@ -771,11 +772,15 @@ public class Graph {
         }
         List<Node> visited = new ArrayList<>();
         Stack<Node> toVisit = new Stack<>();
+        var nodes = getAllNodes();
+        nodes.sort(Comparator.reverseOrder());
+        toVisit.addAll(nodes);
+        toVisit.remove(u);
         toVisit.add(u);
         while (!toVisit.isEmpty()) {
             Node current = toVisit.pop();
             visited.add(current);
-            List<Edge> li = adjEdList.get(current);
+            List<Edge> li = getEdges(current, u);
             li.sort(Comparator.reverseOrder());
             for(Edge e : li){
                 if(!visited.contains(e.to())){
@@ -805,11 +810,61 @@ public class Graph {
     }
 
     public List<Node> getDFSWithVisitInfo(Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
-        return null;
+        if(getAllNodes().isEmpty()){
+            return null;
+        }
+        return getDFSWithVisitInfo(getAllNodes().get(0), nodeVisit, edgeVisit);
     }
 
     public List<Node> getDFSWithVisitInfo(Node u, Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
-        return null;
+        if(u == null){
+            return null;
+        }
+        for(Node n : getAllNodes()){
+            nodeVisit.get(n).colour = NodeColour.WHITE;
+            nodeVisit.get(n).predecessor = null;
+        }
+        time = 0;
+        List<Node> visited = new ArrayList<>();
+        getDFSWithVisitInfo_Visit(u, visited, nodeVisit, edgeVisit);
+        return visited;
+    }
+
+    public void getDFSWithVisitInfo_Visit(Node u, List<Node> visited, Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
+        time++;
+        nodeVisit.get(u).discovery = time;
+        nodeVisit.get(u).colour = NodeColour.GRAY;
+        visited.add(u);
+
+        List<Edge> li = adjEdList.get(u);
+        li.sort(Comparator.reverseOrder());
+        for(Edge e : li){
+            switch(nodeVisit.get(e.to()).colour){
+                case BLACK:
+                    // Forward or Cross
+                    // TODO differenciate forward and cross 
+                    edgeVisit.put(e, EdgeVisitType.FORWARD);
+                    //edgeVisit.put(e, EdgeVisitType.CROSS);
+                    break;
+                case GRAY:
+                    // Backward
+                    edgeVisit.put(e, EdgeVisitType.BACKWARD);
+                    break;
+                case WHITE:
+                    // Tree
+                    edgeVisit.put(e, EdgeVisitType.TREE);
+                    nodeVisit.get(e.to()).predecessor = u;
+                    getDFSWithVisitInfo_Visit(e.to(), visited, nodeVisit, edgeVisit);
+                    break;
+                default:
+                    break;
+                
+            }
+        }
+
+        nodeVisit.get(u).colour = NodeColour.BLACK;
+        time++;
+        nodeVisit.get(u).finished = time;
     }
 
     /**************************
@@ -820,10 +875,23 @@ public class Graph {
      **************************/
 
     public static Graph fromDotFile(String filename) {
-        return null;
+        return fromDotFile(filename, ".gv");
     }
 
     public static Graph fromDotFile(String filename, String extension) {
+        try {
+            File dotFile = new File(filename + extension);
+            Scanner myReader = new Scanner(dotFile);
+            while (myReader.hasNextLine()) {
+              String data = myReader.nextLine();
+              System.out.println(data);
+            }
+            myReader.close();
+          } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+          }
+
         return null;
     }
 
@@ -831,11 +899,12 @@ public class Graph {
         String dotString = "digraph G {";
 
         for (Node n : getAllNodes()){
-            dotString += "\n\t" + n.toString();
+            dotString += "\n\t" + n;
         }
 
         for (Edge e : getAllEdges()){
-            dotString += "\n\t" + e.toString();
+            dotString += "\n\t" + e.from() + " -> " + e.to();
+            if(e.isWeighted()) dotString += " [label=" + e.getWeight() + ", len=" + e.getWeight() + "]";
         }
 
         dotString += "\n}";
