@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Graph {
-    public static final boolean dev = true; 
+    public static final boolean dev = false; 
 
     /* Attributes */
 
@@ -817,6 +817,10 @@ public class Graph {
 
     public String toDotString() {
         String dotString = "digraph G {";
+
+        for (Node n : getAllNodes()){
+            dotString += "\n\t" + n.toString();
+        }
 
         for (Edge e : getAllEdges()){
             dotString += "\n\t" + e.toString();
