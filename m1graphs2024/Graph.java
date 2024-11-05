@@ -722,7 +722,7 @@ public class Graph {
      /**
       * for obtaining a representation of the graph in the SA (successor array) formalism
       * For every nodes, iterate through its adjacency edge list, and for each edge,
-      * add the @to Node id in the result array
+      * add the 'to' Node id in the result array
       * After checking every edge of a node, simply add a 0 in the result array
       * @return an array of int
       */
