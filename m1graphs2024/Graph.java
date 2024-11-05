@@ -692,7 +692,7 @@ public class Graph {
         int[] result = new int[nbEdges() + nbNodes()];
         int count = 0;
         for (Node curr : getAllNodes()) {
-            List<Edge> successors = adjEdList.get(curr);
+            List<Edge> successors = getOutEdges(curr);
             Iterator<Edge> iteEdge = successors.iterator();
             while(iteEdge.hasNext()){
                 result[count] = iteEdge.next().to().getId();
@@ -759,24 +759,27 @@ public class Graph {
 
     /**
      * for computing in a new graph the transitive closure of the graph
+     * https://en.wikipedia.org/wiki/Transitive_closure
+     * For each node 'u' of the graph the algorithm do a traversal and every
+     * encountered node 'v' becomes a destination of the node u (an edge from u to v is added)
      * @return a Graph
      */
     public Graph getTransitiveClosure(){
         Graph transClosure = new Graph();
 
-        for (Node origin : getAllNodes()){
+        for (Node u : getAllNodes()){
             List<Node> visited = new ArrayList<>();
             Stack<Node> toVisit = new Stack<>();
-            toVisit.add(origin);
-            transClosure.addNode(origin.getId());
+            toVisit.add(u);
+            transClosure.addNode(u.getId());
             while (!toVisit.isEmpty()) {
                 Node current = toVisit.pop();
                 if(!visited.contains(current)){
-                    for (Edge e : adjEdList.get(current)){
-                        if(!transClosure.existsEdge(origin.getId(), e.to().getId())){
-                            transClosure.addEdge(origin.getId(), e.to().getId());
-                            toVisit.remove(e.to());
-                            toVisit.add(e.to());
+                    for (Edge v : getOutEdges(current)){ // here 'v' is an edge but the v from the algorithm is actually the @to of that edge  
+                        if(!transClosure.existsEdge(u.getId(), v.to().getId())){
+                            transClosure.addEdge(u.getId(), v.to().getId());
+                            toVisit.remove(v.to());
+                            toVisit.add(v.to());
                         }
                     }
                     visited.add(current);
@@ -792,23 +795,14 @@ public class Graph {
      * @return true if this graph is a multi-graph, false else
      */
     public boolean isMultiGraph(){
-        List<Edge> allEdges = new ArrayList<>();
+        List<Edge> visited = new ArrayList<>();
         for(Edge e : getAllEdges()){
-            Edge newEdge = new Edge(e.from(), e.to(), this);
-            if(allEdges.contains(newEdge)){
+            if(visited.contains(e)){
                 return true;
             }
-            allEdges.add(newEdge);
+            visited.add(e);
         }
         return false;
-    }
-
-    /**
-     * for knowing if this is a simple graph (i.e. it has neither self-loop nor multi-edge) or not
-     * @return true if this graph is a simple graph, false else
-     */
-    public boolean isSimpleGraph(){
-        return !(isMultiGraph() || hasSelfLoops());
     }
 
     /**
@@ -825,26 +819,30 @@ public class Graph {
     }
 
     /**
+     * for knowing if this is a simple graph (i.e. it has neither self-loop nor multi-edge) or not
+     * @return true if this graph is a simple graph, false else
+     */
+    public boolean isSimpleGraph(){
+        return !(isMultiGraph() || hasSelfLoops());
+    }
+
+    /**
      * for transforming the (possibly) multi-graph this into a simple one, by removing its
      * self-loops and multi-edges
+     * The algorithm is an iteration over every edge, if the from and to are equal it is deleted
+     * and if 
      * @return a Graph 
      */
     public Graph toSimpleGraph(){
         Graph result = this.copy();
         List<Edge> visited = new ArrayList<>();
-        boolean delete = false;
+        //boolean delete = false;
         for(Edge e : result.getAllEdges()){
             if(e.to() == e.from()){
                 result.removeEdge(e);
             }else{
-                for(Edge e1 : visited){
-                    if(e.from() == e1.from() && e.to() == e1.to()){
-                        result.removeEdge(e);
-                        delete = true;
-                    }
-                }
-                if(delete){
-                    delete = false;
+                if(visited.contains(e)){
+                    result.removeEdge(e);
                 }else{
                     visited.add(e);
                 }
@@ -891,6 +889,13 @@ public class Graph {
 
     /**
      * for getting a Depth-First Search traversal of the graph, starting from node u
+     * The algorithm is not recursive 
+     * It uses the LIFO Stack toVisit and a list of visited nodes
+     * It first adds all the nodes in decreasing order in toVisit
+     * Then while toVisit is not empty, it pops the node on top,
+     * put it in the visited list, then for each out-edge
+     * it takes the node @to and if it is not already visited, it gets 
+     * pushed to the top of the toVisit stack
      * @param u the starting Node
      * @return the list of visited node in DFS order
      */
@@ -908,11 +913,11 @@ public class Graph {
         while (!toVisit.isEmpty()) {
             Node current = toVisit.pop();
             visited.add(current);
-            List<Edge> li = getEdges(current, u);
-            li.sort(Comparator.reverseOrder());
+            List<Edge> li = getOutEdges(current);
+            li.sort(Comparator.reverseOrder()); // Reproducibility
             for(Edge e : li){
                 if(!visited.contains(e.to())){
-                    // Put e.to() to the top of the toVisit stack
+                    // Push e.to() to the top of the toVisit stack
                     toVisit.remove(e.to());
                     toVisit.add(e.to());
                 }
@@ -960,6 +965,7 @@ public class Graph {
      * Get a detailled DFS : characterizing the nodes by their colour (white, gray, black ); 
      * their predecessor in the traversal; their discovery and finish timestamps;
      * the edges by their type (tree, backward, forward or cross edge).
+     * The algorithm here is the one from the lecture, a recursive DFS with colour, time and predecessor informations 
      * @param nodeVisit a map of Node, NodeVisitInfo (NodeVisitInfo is a class that encapsulates the colour of a node 
      * (of type enum NodeColour {WHITE, GRAY,BLACK}), its predecessor (of type Node), its discovery and finished timestamps (of type Integer))
      * @param edgeVisit a map of Edge, EdgeVisitType (EdgeVisitType is simply an enum: {TREE, BACKWARD, FORWARD, CROSS})
@@ -976,6 +982,7 @@ public class Graph {
      * Get a detailled DFS starting from node u : characterizing the nodes by their colour (white, gray, black ); 
      * their predecessor in the traversal; their discovery and finish timestamps;
      * the edges by their type (tree, backward, forward or cross edge).
+     * The algorithm here is the one from the lecture, a recursive DFS with colour, time and predecessor informations 
      * @param u the starting Node
      * @param nodeVisit a map of Node, NodeVisitInfo (NodeVisitInfo is a class that encapsulates the colour of a node 
      * (of type enum NodeColour {WHITE, GRAY,BLACK}), its predecessor (of type Node), its discovery and finished timestamps (of type Integer))
@@ -993,6 +1000,7 @@ public class Graph {
         time = 0;
         List<Node> visited = new ArrayList<>();
         getDFSWithVisitInfo_Visit(u, visited, nodeVisit, edgeVisit);
+        time = 0;
         return visited;
     }
 
@@ -1009,7 +1017,7 @@ public class Graph {
         nodeVisit.get(u).colour = NodeColour.GRAY;
         visited.add(u);
 
-        List<Edge> li = adjEdList.get(u);
+        List<Edge> li = getOutEdges(u);
         li.sort(Comparator.reverseOrder());
         for(Edge e : li){
             switch(nodeVisit.get(e.to()).colour){
