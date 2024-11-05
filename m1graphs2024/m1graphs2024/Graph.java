@@ -26,6 +26,7 @@ public class Graph {
      * The Adjencent Edge List implemented as a Map
      */
     private Map<Node, List<Edge>> adjEdList;
+    @SuppressWarnings("unused")
     private String name;
 
     /* Constructors */
@@ -1114,7 +1115,7 @@ public class Graph {
             switch(nodeVisit.get(e.to()).colour){
                 case BLACK:
                     // Forward or Cross
-                    // TODO differenciate forward and cross 
+                    // Not Done : differenciate forward and cross 
                     edgeVisit.put(e, EdgeVisitType.FORWARD);
                     //edgeVisit.put(e, EdgeVisitType.CROSS);
                     break;
@@ -1169,57 +1170,60 @@ public class Graph {
         Graph result = null;
         File newFile = new File("./m1graphs2024/dotGraphsTestPW2/" + filename + extension);
         try{
-            Scanner parser = new Scanner(newFile);
-            while(parser.hasNextLine()){
-                String curr = parser.nextLine().trim();
+            try (Scanner parser = new Scanner(newFile)) {
+                while(parser.hasNextLine()){
+                    String curr = parser.nextLine().trim();
 
-                if(curr.charAt(0) == '#' || curr.isEmpty()){
-                    continue;
-                }
+                    if(curr.charAt(0) == '#' || curr.isEmpty()){
+                        continue;
+                    }
 
-                String[] token = curr.split("\\s+");
-                if(curr.contains("{")){
-                    if(token.length == 3){
-                        if(Objects.equals(token[2], "{")){
+                    String[] token = curr.split("\\s+");
+                    if(curr.contains("{")){
+                        if(token.length == 3){
+                            if(Objects.equals(token[2], "{")){
+                                if(token[0].equals("digraph")){
+                                    result = new Graph(token[1]);
+                                }else{
+                                    return null;
+                                }
+                            }
+                        }else{
                             if(token[0].equals("digraph")){
-                                result = new Graph(token[1]);
+                                result = new Graph();
                             }else{
                                 return null;
                             }
                         }
-                    }else{
-                        if(token[0].equals("digraph")){
-                            result = new Graph();
-                        }else{
-                            return null;
-                        }
                     }
-                }
 
-                if(token[token.length - 1].equals("}")){
-                    return result;
-                }
-                
-                if(result != null){
-                    if(token.length >= 3){
-                        if(token[1].equals("->")){
-                            int node1 = Integer.parseInt(token[0]);
-                            int node2 = Integer.parseInt(token[2]);
-                            result.addNode(node1);
-                            result.addNode(node2);
+                    if(token[token.length - 1].equals("}")){
+                        return result;
+                    }
+                    
+                    if(result != null){
+                        if(token.length >= 3){
+                            if(token[1].equals("->")){
+                                int node1 = Integer.parseInt(token[0]);
+                                int node2 = Integer.parseInt(token[2]);
+                                result.addNode(node1);
+                                result.addNode(node2);
 
-                            if(token.length > 3){
-                                result.addEdge(node1, node2, Integer.parseInt(token[token.length - 1].split("=")[1].replace("]", "")));
-                            }else{
-                                result.addEdge(node1, node2);
+                                if(token.length > 3){
+                                    result.addEdge(node1, node2, Integer.parseInt(token[token.length - 1].split("=")[1].replace("]", "")));
+                                }else{
+                                    result.addEdge(node1, node2);
+                                }
+                            }
+                        }else{
+                            if(token.length == 1 && token[0].matches("[0-9]+")){
+                                result.addNode(Integer.parseInt(token[0]));
                             }
                         }
-                    }else{
-                        if(token.length == 1 && token[0].matches("[0-9]+")){
-                            result.addNode(Integer.parseInt(token[0]));
-                        }
                     }
                 }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
         }catch(FileNotFoundException f){
             throw new RuntimeException(f);
@@ -1257,9 +1261,8 @@ public class Graph {
      * for exporting the graph as a file in the DOT syntax
      * The extension is assumed to be ’.gv’.
      * @param filename a String. The absolute path to the DOT file with no extension
-     * @throws IOException if the writer is not able to create the file
      */
-    public void toDotFile(String filename) throws IOException {
+    public void toDotFile(String filename){
         toDotFile(filename, ".gv");
     }
 

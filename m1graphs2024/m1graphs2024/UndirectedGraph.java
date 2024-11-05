@@ -556,57 +556,61 @@ public class UndirectedGraph extends Graph{
         UndirectedGraph result = null;
         File newFile = new File("./m1graphs2024/dotGraphsTestPW2/" + filename + extension);
         try{
-            Scanner parser = new Scanner(newFile);
-            while(parser.hasNextLine()){
-                String curr = parser.nextLine().trim();
+            try (Scanner parser = new Scanner(newFile)) {
+                while(parser.hasNextLine()){
+                    String curr = parser.nextLine().trim();
 
-                if(curr.charAt(0) == '#' || curr.isEmpty()){
-                    continue;
-                }
+                    if(curr.charAt(0) == '#' || curr.isEmpty()){
+                        continue;
+                    }
 
-                String[] token = curr.split("\\s+");
-                if(curr.contains("{")){
-                    if(token.length == 3){
-                        if(Objects.equals(token[2], "{")){
+                    String[] token = curr.split("\\s+");
+                    if(curr.contains("{")){
+                        if(token.length == 3){
+                            if(Objects.equals(token[2], "{")){
+                                if(token[0].equals("graph")){
+                                    result = new UndirectedGraph(token[1]);
+                                }else{
+                                    return null;
+                                }
+                            }
+                        }else{
                             if(token[0].equals("graph")){
-                                result = new UndirectedGraph(token[1]);
+                                result = new UndirectedGraph();
                             }else{
                                 return null;
                             }
                         }
-                    }else{
-                        if(token[0].equals("graph")){
-                            result = new UndirectedGraph();
-                        }else{
-                            return null;
-                        }
                     }
-                }
 
-                if(token[token.length - 1].equals("}")){
-                    return result;
-                }
-                
-                if(result != null){
-                    if(token.length >= 3){
-                        if(token[1].equals("--")){
-                            int node1 = Integer.parseInt(token[0]);
-                            int node2 = Integer.parseInt(token[2]);
-                            result.addNode(node1);
-                            result.addNode(node2);
+                    if(token[token.length - 1].equals("}")){
+                        return result;
+                    }
+                    
+                    if(result != null){
+                        if(token.length >= 3){
+                            if(token[1].equals("--")){
+                                int node1 = Integer.parseInt(token[0]);
+                                int node2 = Integer.parseInt(token[2]);
+                                result.addNode(node1);
+                                result.addNode(node2);
 
-                            if(token.length > 3){
-                                result.addEdge(node1, node2, Integer.parseInt(token[token.length - 1].split("=")[1].replace("]", "")));
-                            }else{
-                                result.addEdge(node1, node2);
+                                if(token.length > 3){
+                                    result.addEdge(node1, node2, Integer.parseInt(token[token.length - 1].split("=")[1].replace("]", "")));
+                                }else{
+                                    result.addEdge(node1, node2);
+                                }
+                            }
+                        }else{
+                            if(token.length == 1 && token[0].matches("[0-9]+")){
+                                result.addNode(Integer.parseInt(token[0]));
                             }
                         }
-                    }else{
-                        if(token.length == 1 && token[0].matches("[0-9]+")){
-                            result.addNode(Integer.parseInt(token[0]));
-                        }
                     }
                 }
+            } catch (NumberFormatException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }catch(FileNotFoundException f){
             throw new RuntimeException(f);

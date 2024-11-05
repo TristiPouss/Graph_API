@@ -21,6 +21,7 @@ public class Node implements Comparable<Node>{
     /**
      * A node is not obligated to have a name, it can have it or not depend of the constructor 
      */
+    @SuppressWarnings("unused")
     private String name;
 
     /**
