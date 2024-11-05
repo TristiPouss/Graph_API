@@ -53,7 +53,7 @@ public class Graph {
      * @return the number of nodes in the graph
      */
     public int nbNodes(){
-        return adjEdList.keySet().size();
+        return getAllEdges().size();
     }
 
     /**
@@ -681,19 +681,23 @@ public class Graph {
      *                        *
      **************************/
 
+     /**
+      * for obtaining a representation of the graph in the SA (successor array) formalism
+      * @return an array of int
+      */
     public int[] toSuccessorArray(){
         int[] result = new int[nbEdges() + nbNodes()];
-        int compteur = 0;
+        int count = 0;
         for (Node curr : getAllNodes()) {
             System.out.println("Node : " + curr.getId());
             List<Edge> successors = adjEdList.get(curr);
             Iterator<Edge> iteEdge = successors.iterator();
             while(iteEdge.hasNext()){
-                result[compteur] = iteEdge.next().to().getId();
-                compteur++;
+                result[count] = iteEdge.next().to().getId();
+                count++;
             }
-            result[compteur] = 0;
-            compteur++;
+            result[count] = 0;
+            count++;
         }
 
         if(dev){
@@ -708,6 +712,12 @@ public class Graph {
         return result;
     }
 
+    /**
+     * for obtaining a representation of the graph as an adjacency matrix. Multigraphs are
+     *  allowed, so the elements in the matrix may be greater than 1, indicating the number of edges between any two
+     *  nodes. Also graphs with self-loops are allowed, thus allowing nonzero diagonal elements
+     * @return a matrix of int
+     */
     public int[][] toAdjMatrix(){
         int[][] adjMatrix = new int[nbNodes()][nbNodes()];
         for (Edge e : getAllEdges()){
@@ -725,6 +735,10 @@ public class Graph {
         return adjMatrix;
     }
 
+    /**
+     * for computing in a new graph the reverse (G−1) of the graph
+     * @return a Graph
+     */
     public Graph getReverse(){
         Graph reverse = new Graph();
 
@@ -739,6 +753,10 @@ public class Graph {
         return reverse;
     }
 
+    /**
+     * for computing in a new graph the transitive closure of the graph
+     * @return a Graph
+     */
     public Graph getTransitiveClosure(){
         Graph transClosure = new Graph();
 
@@ -763,6 +781,10 @@ public class Graph {
         return transClosure;
     }
 
+    /**
+     * for knowing if this is a multi-graph (i.e. it has at least one multi-edge) or not
+     * @return true if this graph is a multi-graph, false else
+     */
     public boolean isMultiGraph(){
         List<Edge> allEdges = new ArrayList<>();
         for(Edge e : getAllEdges()){
@@ -775,10 +797,18 @@ public class Graph {
         return false;
     }
 
+    /**
+     * for knowing if this is a simple graph (i.e. it has neither self-loop nor multi-edge) or not
+     * @return true if this graph is a simple graph, false else
+     */
     public boolean isSimpleGraph(){
         return !(isMultiGraph() || hasSelfLoops());
     }
 
+    /**
+     * for knowing if this has self-loops or not
+     * @return true if this graph has self loops, false else
+     */
     public boolean hasSelfLoops(){
         for(Edge e : getAllEdges()){
             if(e.from().equals(e.to())){
@@ -788,6 +818,11 @@ public class Graph {
         return false;
     }
 
+    /**
+     * for transforming the (possibly) multi-graph this into a simple one, by removing its
+     * self-loops and multi-edges
+     * @return a Graph 
+     */
     public Graph toSimpleGraph(){
         Graph result = this.copy();
         List<Edge> visited = new ArrayList<>();
@@ -812,6 +847,10 @@ public class Graph {
         return result;
     }
 
+    /**
+     * to get a copy of this graph into a new graph
+     * @return a Graph
+     */
     public Graph copy(){
         Graph copy = new Graph();
 
@@ -833,6 +872,10 @@ public class Graph {
      *                        *
      **************************/
 
+     /**
+      * for getting a Depth-First Search traversal of the graph
+      * @return the list of visited node in DFS order
+      */
     public List<Node> getDFS(){
         if(getAllNodes().isEmpty()){
             return null;
@@ -840,6 +883,11 @@ public class Graph {
         return getDFS(getAllNodes().get(0));
     }
 
+    /**
+     * for getting a Depth-First Search traversal of the graph, starting from node u
+     * @param u the starting Node
+     * @return the list of visited node in DFS order
+     */
     public List<Node> getDFS(Node u){
         if(u == null){
             return null;
@@ -867,22 +915,50 @@ public class Graph {
         return visited;
     }
 
+    /**
+     * for getting a Depth-First Search traversal of the graph, starting from node u
+     * @param u an int (the starting Node)
+     * @return the list of visited node in DFS order
+     */
     public List<Node> getDFS(int u){
-        return getDFS(this.getNode(u));
+        return getDFS(getNode(u));
     }
 
+    /**
+     * for getting a Breadth-First Search traversal of the graph
+     * @return the list of visited node in BFS order
+     */
     public List<Node> getBFS() {
         return null;
     }
 
+    /**
+     * for getting a Breadth-First Search traversal of the graph, starting from node u
+     * @param u the starting Node
+     * @return the list of visited node in BFS order
+     */
     public List<Node> getBFS(Node u) {
         return null;
     }
 
+    /**
+     * for getting a Breadth-First Search traversal of the graph, starting from node u
+     * @param u an int (the starting Node)
+     * @return the list of visited node in BFS order
+     */
     public List<Node> getBFS(int u) {
         return null;
     }
 
+    /**
+     * Get a detailled DFS : characterizing the nodes by their colour (white, gray, black ); 
+     * their predecessor in the traversal; their discovery and finish timestamps;
+     * the edges by their type (tree, backward, forward or cross edge).
+     * @param nodeVisit a map of Node, NodeVisitInfo (NodeVisitInfo is a class that encapsulates the colour of a node 
+     * (of type enum NodeColour {WHITE, GRAY,BLACK}), its predecessor (of type Node), its discovery and finished timestamps (of type Integer))
+     * @param edgeVisit a map of Edge, EdgeVisitType (EdgeVisitType is simply an enum: {TREE, BACKWARD, FORWARD, CROSS})
+     * @return the list of visited node in DFS order
+     */
     public List<Node> getDFSWithVisitInfo(Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
         if(getAllNodes().isEmpty()){
             return null;
@@ -890,6 +966,16 @@ public class Graph {
         return getDFSWithVisitInfo(getAllNodes().get(0), nodeVisit, edgeVisit);
     }
 
+    /**
+     * Get a detailled DFS starting from node u : characterizing the nodes by their colour (white, gray, black ); 
+     * their predecessor in the traversal; their discovery and finish timestamps;
+     * the edges by their type (tree, backward, forward or cross edge).
+     * @param u the starting Node
+     * @param nodeVisit a map of Node, NodeVisitInfo (NodeVisitInfo is a class that encapsulates the colour of a node 
+     * (of type enum NodeColour {WHITE, GRAY,BLACK}), its predecessor (of type Node), its discovery and finished timestamps (of type Integer))
+     * @param edgeVisit a map of Edge, EdgeVisitType (EdgeVisitType is simply an enum: {TREE, BACKWARD, FORWARD, CROSS})
+     * @return the list of visited node in DFS order
+     */
     public List<Node> getDFSWithVisitInfo(Node u, Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
         if(u == null){
             return null;
@@ -904,6 +990,13 @@ public class Graph {
         return visited;
     }
 
+    /**
+     * Function used for recursivity in the detailled dfs traversal
+     * @param u Current Node
+     * @param visited the Visited Node Array used as return in the main function
+     * @param nodeVisit the map of Node and NodeVisitInfo
+     * @param edgeVisit the map of Edge and EdgeVisitType
+     */
     public void getDFSWithVisitInfo_Visit(Node u, List<Node> visited, Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
         time++;
         nodeVisit.get(u).discovery = time;
@@ -948,10 +1041,22 @@ public class Graph {
      *                        *
      **************************/
 
+     /**
+      * for importing a file in the restricted DOT format.
+      * The extension is assumed to be ’.gv’.
+      * @param filename a String. The absolute path to the DOT file with no extension
+      * @return a Graph
+      */
     public static Graph fromDotFile(String filename) {
         return fromDotFile(filename, ".gv");
     }
 
+    /**
+      * for importing a file in the restricted DOT format
+      * @param filename a String. The absolute path to the DOT file with no extension
+      * @param extension a String, The extension of the file
+      * @return a Graph
+      */
     public static Graph fromDotFile(String filename, String extension) {
         try {
             File dotFile = new File(filename + extension);
@@ -969,6 +1074,10 @@ public class Graph {
         return null;
     }
 
+    /**
+     * for exporting the graph as a String in the DOT syntax
+     * @return a String
+     */
     public String toDotString() {
         String dotString = "digraph G {";
 
@@ -985,10 +1094,21 @@ public class Graph {
         return dotString;
     }
 
+    /**
+     * for exporting the graph as a file in the DOT syntax
+     * The extension is assumed to be ’.gv’.
+     * @param fileName a String. The absolute path to the DOT file with no extension
+     * @throws IOException if the writer is not able to create the file
+     */
     public void toDotFile(String fileName) throws IOException {
         toDotFile(fileName, ".gv");
     }
 
+    /**
+     * for exporting the graph as a file in the DOT syntax
+     * @param filename a String. The absolute path to the DOT file with no extension
+     * @param extension a String, The extension of the file
+     */
     public void toDotFile(String fileName, String extension) {
         fileName += extension;
         try {
