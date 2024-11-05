@@ -59,7 +59,6 @@ public class Graph {
     /**
      * 
      * @param n a node 
-     * 
      * @return true if the id is already used in this graph or false if not
      */
     public boolean usesNode(Node n){
@@ -69,7 +68,6 @@ public class Graph {
     /**
      * 
      * @param id a int
-     * 
      * @return true if the id is used in the graph or false if not
      */
     public boolean usesNode(int id){
@@ -79,7 +77,6 @@ public class Graph {
     /**
      * 
      * @param n a node
-     * 
      * @return true if the node is in the graph or false if not
      */
     public boolean holdsNode(Node n){
@@ -87,14 +84,11 @@ public class Graph {
     }
 
     /**
-     * @param id an integer
-     * 
+     * @param id an int
      * @return the node with the corresponding id or null if it doesnt exist in this graph
      */
     public Node getNode(int id){
-
-        var allNodes = adjEdList.keySet();
-        for (Node n : allNodes){
+        for (Node n : getAllNodes()){
             if (n.getId() == id){
                 return n;
             }
@@ -104,33 +98,39 @@ public class Graph {
 
     
     /** 
-     * @param n
-     * @return boolean
+     * Add a node to this graph
+     * @param n a Node
+     * @return false if the node already exists, true else
      */
     public boolean addNode(Node n){
         if(this.usesNode(n)){
             return false;
         }
-        List<Edge> emptyEdgeList = new ArrayList<>();
-        adjEdList.put(n, emptyEdgeList);
+        adjEdList.put(n, new ArrayList<>());
         return true;
     }
 
     
     /** 
-     * @param n
-     * @return boolean
+     * Add a node to this graph
+     * @param id an int
+     * @return false if the node already exists, true else
      */
-    public boolean addNode(int n){
-        if(this.usesNode(n)){
+    public boolean addNode(int id){
+        if(this.usesNode(id)){
             return false;
         }
-        if (dev) System.out.println("Adding Node " + n);
-        adjEdList.put(new Node(n, this), new ArrayList<>());
+        if (dev) System.out.println("Adding Node " + id);
+        adjEdList.put(new Node(id, this), new ArrayList<>());
         if (dev) System.out.println("Adjacency List : " + adjEdList);
         return true;
     }
 
+    /** 
+     * Remove a node from this graph
+     * @param n a Node
+     * @return false if the node is not in the graph, true else
+     */
     public boolean removeNode(Node n){
         if(!this.holdsNode(n)){
             return false;
@@ -144,6 +144,11 @@ public class Graph {
         return true;
     }
 
+    /** 
+     * Remove a node from this graph
+     * @param id an int
+     * @return false if the node is not in the graph, true else
+     */
     public boolean removeNode(int id){
         if(!this.usesNode(id)){
             return false;
@@ -153,22 +158,28 @@ public class Graph {
         while(inIterator.hasNext()){
             removeEdge(inIterator.next());
         }
-        Node n = new Node(id, this);
-        adjEdList.remove(n);
+        adjEdList.remove(new Node(id, this));
         return true;
     }
 
+    /**
+     * For getting the list of all the nodes of the graph
+     * @return a List of all the Nodes of the graph
+     */
     public List<Node> getAllNodes(){
         Set<Node> keys = adjEdList.keySet();
         List<Node> allNodes = new ArrayList<>(keys.size());
         allNodes.addAll(keys);
-        Collections.sort(allNodes);
+        Collections.sort(allNodes); // Sort for the sake of reproductibility
         return allNodes;
     }
 
+    /**
+     * For knowing the largest id used by a node in the graph
+     * @return an int 
+     */
     public int largestNodeId(){
-        Set<Node> nodes = adjEdList.keySet();
-        Iterator<Node> ite = nodes.iterator();
+        Iterator<Node> ite = getAllNodes().iterator();        
         int max = 0;
         while(ite.hasNext()){
             Node curr = ite.next();
@@ -179,9 +190,12 @@ public class Graph {
         return max;
     }
 
+    /**
+     * For knowing the smallest id used by a node in the graph
+     * @return an int 
+     */
     public int smallestNodeId(){
-        Set<Node> nodes = adjEdList.keySet();
-        Iterator<Node> ite = nodes.iterator();
+        Iterator<Node> ite = getAllNodes().iterator();
         int min = 0;
         while(ite.hasNext()){
             Node curr = ite.next();
@@ -196,6 +210,11 @@ public class Graph {
         return min;
     }
 
+    /**
+     * For getting a list without duplicates of the successor of node n
+     * @param n a Node
+     * @return a List of Node
+     */
     public List<Node> getSuccessors(Node n){
         List<Node> result = new ArrayList<>();
         List<Edge> allEdges = getOutEdges(n);
@@ -209,11 +228,20 @@ public class Graph {
         return result;
     }
 
+    /**
+     * For getting a list without duplicates of the successor of node n
+     * @param id an int
+     * @return a List of Node
+     */
     public List<Node> getSuccessors(int id ){
-        Node n = getNode(id);
-        return getSuccessors(n);
+        return getSuccessors(getNode(id));
     }
 
+    /**
+     * For getting a list with possible duplicates of the successors 
+     * @param n a Node
+     * @return a List of Node
+     */
     public List<Node> getSuccessorsMulti(Node n){
         List<Node> result = new ArrayList<>();
         List<Edge> allEdges = getOutEdges(n);
@@ -224,41 +252,87 @@ public class Graph {
         return result;
     }
 
+    /**
+     * For getting a list with possible duplicates of the successors 
+     * @param id an int
+     * @return a List of Node
+     */
     public List<Node> getSuccessorsMulti(int id){
-        Node n = getNode(id);
-        return getSuccessorsMulti(n);
+        return getSuccessorsMulti(getNode(id));
     }
 
+    /**
+     * For knowing whether nodes u and v are adjacent in the graph
+     * @param u a Node 
+     * @param v a Node
+     * @return true if u and v are adjacent, false else
+     */
     public boolean adjacent(Node u, Node v){
         return existsEdge(u, v);
     }
 
+    /**
+     * For knowing whether nodes u and v are adjacent in the graph
+     * @param u an int 
+     * @param v an int
+     * @return true if u and v are adjacent, false else
+     */
     public boolean adjacent(int u, int v){
         return existsEdge(u, v);
     }
 
+    /**
+     * for knowing the in-degree of node n. 
+     * @param n a Node
+     * @return an int
+     */
     public int inDegree(Node n){
         return getInEdges(n).size();
     }
 
+    /**
+     * for knowing the in-degree of node n. 
+     * @param n an int
+     * @return an int
+     */
     public int inDegree(int n){
         return getInEdges(n).size();
     }
 
+    /**
+     * for knowing the out-degree of node n. 
+     * @param n a Node
+     * @return an int
+     */
     public int outDegree(Node n){
         return getOutEdges(n).size();
     }
 
+    /**
+     * for knowing the out-degree of node n. 
+     * @param n an int
+     * @return an int
+     */
     public int outDegree(int n){
         return getOutEdges(n).size();
     }
 
+    /**
+     * for knowing the degree of node n. 
+     * @param n a Node
+     * @return an int
+     */
     public int degree(Node n){
-        return getOutEdges(n).size() + getInEdges(n).size();
+        return getIncidentEdges(n).size();
     }
 
+    /**
+     * for knowing the degree of node n. 
+     * @param n an int
+     * @return an int
+     */
     public int degree(int n){
-        return getOutEdges(n).size() + getInEdges(n).size();
+        return getIncidentEdges(n).size();
     }
 
     /**************************
