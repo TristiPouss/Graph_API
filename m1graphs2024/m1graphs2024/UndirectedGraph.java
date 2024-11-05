@@ -89,11 +89,21 @@ public class UndirectedGraph extends Graph{
         return degree(getNode(n));
     }
 
+    /**
+     * for knowing the degree of node n. 
+     * @param n an int
+     * @return an int
+     */
      @Override
     public int degree(Node n){
         return getOutEdgesForDegrees(n).size();
     }
 
+    /**
+     * for knowing the degree of node n. 
+     * @param n an int
+     * @return an int
+     */
     @Override
     public int degree(int n){
         return getOutEdgesForDegrees(n).size();
@@ -247,6 +257,69 @@ public class UndirectedGraph extends Graph{
     }
 
     /**
+     * For knowing whether an edge exists in this graph between nodes u and v.
+     * @param u any Node id
+     * @param v any Node id
+     * @return  false if any node isn't in the graph or if no edges exists between the two,
+     *          true else.
+     */
+    @Override
+    public boolean existsEdge(int u, int v) {
+        return super.existsEdge(u, v) && super.existsEdge(v, u);
+    }
+
+    /**
+     * For knowing whether an edge exists in this graph between nodes u and v.
+     * @param u any Node 
+     * @param v any Node
+     * @return  false if any node isn't in the graph or if no edges exists between the two,
+     *          true else.
+     */
+    @Override
+    public boolean existsEdge(Node u, Node v) {
+        return super.existsEdge(u, v) && super.existsEdge(v, u);
+    }
+
+    /**
+     * For knowing whether an edge exists in this graph between nodes u and v.
+     * @param e Edge reference
+     * @return  true if the edge is in the graph,
+     *          false else.
+     */
+    @Override
+    public boolean existsEdge(Edge e) {
+        return super.existsEdge(e) && super.existsEdge(e.to(), e.from());
+    }
+
+    /**
+     * for getting the list of all the edges of the graph.
+     * @return the list of all edges in the graph.
+     */
+    @Override
+    public List<Edge> getAllEdges(){
+        boolean add = false;
+        List<Edge> res = new ArrayList<>();
+        for (List<Edge> edges : getList().values()) {
+            for (Edge e : edges) {
+                if(e.from().getId() <= e.to().getId()){
+                    if(e.to() == e.from()){
+                        if(!add){
+                            res.add(e);
+                            add = true;
+                        }else{
+                            add = false;
+                        }
+                    }else{
+                        res.add(e);
+                    }
+                }
+            }
+        }
+        Collections.sort(res);
+        return res;
+    }
+
+    /**
      * For getting the list of edges leaving the Node @n
      * @param n a Node 
      * @return the list of edges leaving the node 
@@ -285,7 +358,7 @@ public class UndirectedGraph extends Graph{
     }
 
     /**
-     * For getting the list of edges leaving the Node @n
+     * For getting the list of edges leaving the Node @n for the degrees (count all the self-loop)
      * @param n a Node 
      * @return the list of edges leaving the node 
      */
@@ -295,7 +368,7 @@ public class UndirectedGraph extends Graph{
     }
 
     /**
-     * For getting the list of edges leaving the Node @n
+     * For getting the list of edges leaving the Node @n for the degrees (count all the self-loop)
      * @param n a Node id
      * @return the list of edges leaving the node 
      */
@@ -406,11 +479,19 @@ public class UndirectedGraph extends Graph{
         return adjMatrix;
     }
 
+    /**
+     * for computing in a new graph the reverse (G−1) of the graph
+     * @return a UndirectedGraph
+     */
     @Override
     public UndirectedGraph getReverse(){
         return copy();
     }
 
+    /**
+     * to get a copy of this graph into a new graph
+     * @return a UndirectedGraph
+     */
     @Override
     public UndirectedGraph copy(){
         UndirectedGraph copy = new UndirectedGraph();
@@ -436,34 +517,6 @@ public class UndirectedGraph extends Graph{
         return copy;
     }
 
-    /**
-     * for getting the list of all the edges of the graph.
-     * @return the list of all edges in the graph.
-     */
-    @Override
-    public List<Edge> getAllEdges(){
-        boolean add = false;
-        List<Edge> res = new ArrayList<>();
-        for (List<Edge> edges : getList().values()) {
-            for (Edge e : edges) {
-                if(e.from().getId() <= e.to().getId()){
-                    if(e.to() == e.from()){
-                        if(!add){
-                            res.add(e);
-                            add = true;
-                        }else{
-                            add = false;
-                        }
-                    }else{
-                        res.add(e);
-                    }
-                }
-            }
-        }
-        Collections.sort(res);
-        return res;
-    }
-
     @Override
     public String toDotString() {
         String dotString = "graph {";
@@ -487,21 +540,6 @@ public class UndirectedGraph extends Graph{
 
         dotString += "\n}";
         return dotString;
-    }
-
-    @Override
-    public boolean existsEdge(int u, int v) {
-        return super.existsEdge(u, v) && super.existsEdge(v, u);
-    }
-
-    @Override
-    public boolean existsEdge(Node u, Node v) {
-        return super.existsEdge(u, v) && super.existsEdge(v, u);
-    }
-
-    @Override
-    public boolean existsEdge(Edge e) {
-        return super.existsEdge(e) && super.existsEdge(e.to(), e.from());
     }
 
     @Override
@@ -533,6 +571,13 @@ public class UndirectedGraph extends Graph{
         return transClosure;
     }
 
+    /**************************
+     *                        *
+     *      Graph Import      *
+     *       and Export       *
+     *                        *
+     **************************/
+    
     /**
       * for importing a file in the restricted DOT format
       * The base extension is assumed to be .gv

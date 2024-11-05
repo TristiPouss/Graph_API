@@ -1168,7 +1168,7 @@ public class Graph {
             return null;
         }
         Graph result = null;
-        File newFile = new File("./m1graphs2024/dotGraphsTestPW2/" + filename + extension);
+        File newFile = new File(filename + extension);
         try{
             try (Scanner parser = new Scanner(newFile)) {
                 while(parser.hasNextLine()){
