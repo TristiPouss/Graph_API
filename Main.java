@@ -1,5 +1,3 @@
-import java.util.*;
-
 import m1graphs2024.*;
 
 public class Main {
