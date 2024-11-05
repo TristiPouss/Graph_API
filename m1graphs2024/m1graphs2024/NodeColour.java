@@ -1,3 +1,5 @@
+package m1graphs2024;
+
 /**
  * Enumeration to know the state of a node in a traversal 
  * Used in DFS With Visit Infos function

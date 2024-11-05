@@ -1,3 +1,5 @@
+package m1graphs2024;
+
 import java.util.*;
 
 /**
