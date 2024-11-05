@@ -169,8 +169,8 @@ public class Edge implements Comparable<Edge>{
         
         Edge other = (Edge) obj;
 
-        return from == other.from && to == other.to  && 
-                ((!isWeighted() && !other.isWeighted()) || Objects.equals(weight, other.weight));
+        return Objects.equals(from, other.from()) && Objects.equals(to, other.to())  && 
+                ((!isWeighted() && !other.isWeighted()) || Objects.equals(weight, other.getWeight()));
     }
 
     @Override
@@ -185,9 +185,9 @@ public class Edge implements Comparable<Edge>{
 
 	@Override
 	public int compareTo(Edge o) {
-        if (from.getId() != o.from.getId()) return from.getId() - o.from.getId();
-        if (to.getId() != o.to.getId()) return to.getId() - o.to.getId(); 
-        if (isWeighted() && o.isWeighted() && !Objects.equals(weight, o.weight)) return weight - o.weight;
+        if (from.getId() != o.from().getId()) return from.getId() - o.from().getId();
+        if (to.getId() != o.to().getId()) return to.getId() - o.to().getId(); 
+        if (isWeighted() && o.isWeighted() && !Objects.equals(weight, o.getWeight())) return weight - o.getWeight();
         return 0;
 	}
 
