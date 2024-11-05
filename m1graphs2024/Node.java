@@ -70,8 +70,20 @@ public class Node implements Comparable<Node>{
     
     /* API */
 
+    /**
+     * Getter for id
+     * @return an int
+     */
     public int getId() {
         return id;
+    }
+
+    /**
+     * Getter for graphHolder
+     * @return a graph
+     */
+    public Graph getGraph() {
+        return graphHolder;
     }
 
     /**
@@ -94,56 +106,84 @@ public class Node implements Comparable<Node>{
 
     /**
      * Test if a Node is adjacent to this node. 
-     * 
      * @param u is a node 
-     *
      * @return
      */
     public boolean adjacent(Node u){
         return this.graphHolder.adjacent(this, u);
     }
 
+    /**
+     * Test if a Node is adjacent to this node. 
+     * @param u is the id of a node 
+     * @return
+     */
     public boolean adjacent(int id){
         return this.graphHolder.adjacent(this.id, id);
     }
 
+    /**
+     * for knowing the in-degree of this node. 
+     * @return an int
+     */
     public int inDegree(){
         return this.graphHolder.inDegree(this);
     }
     
+    /**
+     * for knowing the out-degree this node. 
+     * @return an int
+     */
     public int outDegree(){
         return this.graphHolder.outDegree(this);
     }
 
+    /**
+     * for knowing the degree of this node. 
+     * @return an int
+     */
     public int degree(){
         return this.graphHolder.degree(this);
     }
 
+    /**
+     * For getting the list of edges leaving the Node
+     * @return the list of edges
+     */
     public List<Edge> getOutEdges(){
         return this.graphHolder.getOutEdges(this);
     }   
 
+    /**
+     * For getting the list of edges entering the Node
+     * @return the list of edges
+     */
     public List<Edge> getInEdges(){
         return this.graphHolder.getInEdges(this);
     }
 
+    /**
+     * for getting the list of all edges incident to this node. 
+     * This is the union of the out and in edges
+     * @return the list of edges entering and leaving the node 
+     */
     public List<Edge> getIncidentEdges(){
         return this.graphHolder.getIncidentEdges(this);
     }
 
+    /**
+     * for getting the list of all edges going from this node to node u. 
+     * N.B. Theoretically, this is the intersection of the out edges from this node and the in edges to u; but computing this intersection
+     * is not efficient so it is better to simply get among the out edges from this node the ones that lead to u.
+     * @param u a Node
+     * @return the list of all edges going from this node to node u. 
+     */
     public List<Edge> getEdgesTo(Node u){
         return this.graphHolder.getEdges(this, u);
     }
 
-    public Graph getGraph() {
-        return graphHolder;
-    }
-
     /* Overrides */
 
-    /**
-     * 
-     */
     @Override
     public boolean equals(Object obj){
         if(obj == null){
@@ -156,9 +196,6 @@ public class Node implements Comparable<Node>{
         return this.id == other.id && this.graphHolder.equals(other.graphHolder);
     }
 
-    /**
-     * 
-     */
     @Override
     public int hashCode(){
         int hash = 1;
@@ -167,11 +204,7 @@ public class Node implements Comparable<Node>{
         return hash;
     }
 
-    /**
-     * 
-     * @param o
-     * @return
-     */
+
     @Override
     public int compareTo(Node o) {
         return id - o.id;
