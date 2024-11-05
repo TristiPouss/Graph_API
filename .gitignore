@@ -5,12 +5,12 @@ test
 test-lib
 
 # test gv files
-m1graphs2024/dotGraphsTestPW2/dotGraphsTestPW2/weightedSimpleGraph.gv
-m1graphs2024/dotGraphsTestPW2/dotGraphsTestPW2/weightedMultiGraph.gv
-m1graphs2024/dotGraphsTestPW2/dotGraphsTestPW2/undirWeightedMultiGraph.gv
-m1graphs2024/dotGraphsTestPW2/dotGraphsTestPW2/simpleGraph.gv
-m1graphs2024/dotGraphsTestPW2/dotGraphsTestPW2/multiGraph.gv
-m1graphs2024/dotGraphsTestPW2/dotGraphsTestPW2/isolatedNodes.gv
+*weightedSimpleGraph.gv
+*weightedMultiGraph.gv
+*undirWeightedMultiGraph.gv
+*simpleGraph.gv
+*multiGraph.gv
+*isolatedNodes.gv
 
 # Javadoc
 javadoc
