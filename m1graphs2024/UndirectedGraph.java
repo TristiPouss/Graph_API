@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.Stack;
 
 /**
+<<<<<<< HEAD
+ * The class UndirectedGraph is a representation of a undirected graph with an Adjacency Edge list
+=======
  * An extend of the class Graph to represent an undirected graph
+>>>>>>> 23af37922c755f540ec8465cb85e9540fa6ee285
  * @author Tristan de Saint Gilles
  * @author Renaud Joffrin
  */
@@ -34,6 +38,46 @@ public class UndirectedGraph extends Graph{
      * Nodes related methods  *
      *                        *
      **************************/
+
+     /**
+     * for knowing the in-degree of node n. 
+     * @param n a Node
+     * @return an int
+     */
+    @Override
+    public int inDegree(Node n){
+        return degree(n);
+    }
+
+    /**
+     * for knowing the in-degree of node n. 
+     * @param n an int
+     * @return an int
+     */
+    @Override
+    public int inDegree(int n){
+        return degree(getNode(n));
+    }
+
+    /**
+     * for knowing the out-degree of node n. 
+     * @param n a Node
+     * @return an int
+     */
+    @Override
+    public int outDegree(Node n){
+        return degree(n);
+    }
+
+    /**
+     * for knowing the out-degree of node n. 
+     * @param n an int
+     * @return an int
+     */
+    @Override
+    public int outDegree(int n){
+        return degree(getNode(n));
+    }
 
      @Override
     public int degree(Node n){
@@ -291,30 +335,65 @@ public class UndirectedGraph extends Graph{
         return getIncidentEdges(getNode(n));
     }
 
+    /**************************
+     *                        *
+     *   Representation and   *
+     * Transformation methods *
+     *                        *
+     **************************/
 
+     /**
+      * for obtaining a representation of the graph in the SA (successor array) formalism
+      * For every nodes, iterate through its adjacency edge list, and for each edge,
+      * add the @to Node id in the result array
+      * After checking every edge of a node, simply add a 0 in the result array
+      * @return an array of int
+      */
     @Override
-    public String toDotString() {
-        String dotString = "graph {";
-
-        List<Node> usedNodes = getAllNodesInEdges();
-
-        for (Node n : getAllNodes()){
-            if(getList().get(n).isEmpty()){
-                if(!usedNodes.contains(n)){
-                    dotString += "\n\t" + n;
-                }
-            }else{
-                for (Edge e : getOutEdges(n)){
-                    if(e.from().getId() <= e.to().getId()){
-                        dotString += "\n\t" + e.from() + " -- " + e.to();
-                        if(e.isWeighted()) dotString += " [label=" + e.getWeight() + ", len=" + e.getWeight() + "]";
-                    }
+    public int[] toSuccessorArray(){
+        int[] result = new int[nbEdges() + nbNodes()];
+        int count = 0;
+        for (Node curr : getAllNodes()) {
+            List<Edge> successors = getOutEdges(curr);
+            for (Edge currEdge : successors) {
+                if(currEdge.from().getId() <= currEdge.to().getId()){
+                    result[count] = currEdge.to().getId();
+                    count++;
                 }
             }
+            result[count] = 0;
+            count++;
         }
 
-        dotString += "\n}";
-        return dotString;
+        return result;
+    }
+
+    /**
+     * for obtaining a representation of the graph as an adjacency matrix. Multigraphs are
+     * allowed, so the elements in the matrix may be greater than 1, indicating the number of edges between any two
+     * nodes. Also graphs with self-loops are allowed, thus allowing nonzero diagonal elements
+     * The method consist to iterate through every edge of the graph and increment by one the number 
+     * at the position [from-1][to-1] of the matrix
+     * @return a matrix of int
+     */
+    @Override
+    public int[][] toAdjMatrix(){
+        int[][] adjMatrix = new int[nbNodes()][nbNodes()];
+        boolean add = false;
+        for (Edge e : super.getAllEdges()){
+            if(e.from() == e.to()){
+                if(!add){
+                    adjMatrix[e.from().getId()-1][e.to().getId()-1]++;
+                    add = true;
+                }else{
+                    add = false;
+                }
+            }else{
+                adjMatrix[e.from().getId()-1][e.to().getId()-1]++;
+            }
+            
+        }
+        return adjMatrix;
     }
 
     @Override
@@ -328,12 +407,9 @@ public class UndirectedGraph extends Graph{
         boolean add = false;
 
         for (Edge e : super.getAllEdges()) {
-            System.out.println(e.from() + " -> " + e.to());
             if(e.from().getId() <= e.to().getId()){
-                System.out.println("Passe");
                 if(e.from() == e.to()){
                     if(!add){
-                        System.out.println("Valide");
                         if (!e.isWeighted()) copy.addEdge(new Edge(e.from().getId(), e.to().getId(), copy));
                         else copy.addEdge(new Edge(e.from().getId(), e.to().getId(), e.getWeight(), copy));
                         add = true;
@@ -341,7 +417,6 @@ public class UndirectedGraph extends Graph{
                         add = false;
                     }
                 }else{
-                    System.out.println("Valide");
                     if (!e.isWeighted()) copy.addEdge(new Edge(e.from().getId(), e.to().getId(), copy));
                     else copy.addEdge(new Edge(e.from().getId(), e.to().getId(), e.getWeight(), copy));
                 }
@@ -377,6 +452,31 @@ public class UndirectedGraph extends Graph{
         }
         Collections.sort(res);
         return res;
+    }
+
+    @Override
+    public String toDotString() {
+        String dotString = "digraph G {";
+
+        List<Node> usedNodes = getAllNodesInEdges();
+
+        for (Node n : getAllNodes()){
+            if(getList().get(n).isEmpty()){
+                if(!usedNodes.contains(n)){
+                    dotString += "\n\t" + n;
+                }
+            }else{
+                for (Edge e : getOutEdges(n)){
+                    if(e.from().getId() <= e.to().getId()){
+                        dotString += "\n\t" + e.from() + " -- " + e.to();
+                        if(e.isWeighted()) dotString += " [label=" + e.getWeight() + ", len=" + e.getWeight() + "]";
+                    }
+                }
+            }
+        }
+
+        dotString += "\n}";
+        return dotString;
     }
 
     @Override
