@@ -562,7 +562,7 @@ public class Graph {
     }
 
     /**
-     * For getting the list of edges leaving the Node @n
+     * For getting the list of edges leaving the Node n
      * @param n a Node 
      * @return the list of edges leaving the node 
      */
@@ -816,9 +816,9 @@ public class Graph {
                     for (Edge v : getOutEdges(current)){ // here 'v' is an edge but the v from the algorithm is actually the @to of that edge  
                         if(!transClosure.existsEdge(u.getId(), v.to().getId())){
                             transClosure.addEdge(u.getId(), v.to().getId());
-                            toVisit.remove(v.to());
-                            toVisit.add(v.to());
                         }
+                        toVisit.remove(v.to());
+                        toVisit.add(v.to());
                     }
                     visited.add(current);
                 }
@@ -1153,7 +1153,6 @@ public class Graph {
                 String[] token = curr.split("\\s+");
                 if(curr.contains("{")){
                     if(token.length == 3){
-                        System.out.println("Passe");
                         if(Objects.equals(token[2], "{")){
                             if(token[0].equals("digraph")){
                                 result = new Graph(token[1]);
