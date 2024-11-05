@@ -1,8 +1,21 @@
 import java.io.*;
 import java.util.*;
 
+/**
+ * The class Graph is a representation of a graph with an Adjacency Edge list
+ * @author Tristan de Saint Gilles
+ * @author Renaud Joffrin
+ */
 public class Graph {
+    /**
+     * Variable used in developpement to print debug information or anything related to testing
+     * @hidden SET TO FALSE BEFORE EXPORT
+     */
     public static final boolean dev = false; 
+    
+    /**
+     * Int used to have a reference time in the DFS With Infos function
+     */
     static int time = 0;
 
     /* Attributes */
@@ -63,13 +76,12 @@ public class Graph {
      * @return the number of nodes in the graph
      */
     public int nbNodes(){
-        return adjEdList.keySet().size();
+        return getAllEdges().size();
     }
 
     /**
      * 
      * @param n a node 
-     * 
      * @return true if the id is already used in this graph or false if not
      */
     public boolean usesNode(Node n){
@@ -79,7 +91,6 @@ public class Graph {
     /**
      * 
      * @param id a int
-     * 
      * @return true if the id is used in the graph or false if not
      */
     public boolean usesNode(int id){
@@ -89,7 +100,6 @@ public class Graph {
     /**
      * 
      * @param n a node
-     * 
      * @return true if the node is in the graph or false if not
      */
     public boolean holdsNode(Node n){
@@ -97,14 +107,11 @@ public class Graph {
     }
 
     /**
-     * @param id an integer
-     * 
+     * @param id an int
      * @return the node with the corresponding id or null if it doesnt exist in this graph
      */
     public Node getNode(int id){
-
-        var allNodes = adjEdList.keySet();
-        for (Node n : allNodes){
+        for (Node n : getAllNodes()){
             if (n.getId() == id){
                 return n;
             }
@@ -114,33 +121,39 @@ public class Graph {
 
     
     /** 
-     * @param n
-     * @return boolean
+     * Add a node to this graph
+     * @param n a Node
+     * @return false if the node already exists, true else
      */
     public boolean addNode(Node n){
         if(this.usesNode(n)){
             return false;
         }
-        List<Edge> emptyEdgeList = new ArrayList<>();
-        adjEdList.put(n, emptyEdgeList);
+        adjEdList.put(n, new ArrayList<>());
         return true;
     }
 
     
     /** 
-     * @param n
-     * @return boolean
+     * Add a node to this graph
+     * @param id an int
+     * @return false if the node already exists, true else
      */
-    public boolean addNode(int n){
-        if(this.usesNode(n)){
+    public boolean addNode(int id){
+        if(this.usesNode(id)){
             return false;
         }
-        if (dev) System.out.println("Adding Node " + n);
-        adjEdList.put(new Node(n, this), new ArrayList<>());
+        if (dev) System.out.println("Adding Node " + id);
+        adjEdList.put(new Node(id, this), new ArrayList<>());
         if (dev) System.out.println("Adjacency List : " + adjEdList);
         return true;
     }
 
+    /** 
+     * Remove a node from this graph
+     * @param n a Node
+     * @return false if the node is not in the graph, true else
+     */
     public boolean removeNode(Node n){
         if(!this.holdsNode(n)){
             return false;
@@ -154,6 +167,11 @@ public class Graph {
         return true;
     }
 
+    /** 
+     * Remove a node from this graph
+     * @param id an int
+     * @return false if the node is not in the graph, true else
+     */
     public boolean removeNode(int id){
         if(!this.usesNode(id)){
             return false;
@@ -163,16 +181,19 @@ public class Graph {
         while(inIterator.hasNext()){
             removeEdge(inIterator.next());
         }
-        Node n = new Node(id, this);
-        adjEdList.remove(n);
+        adjEdList.remove(new Node(id, this));
         return true;
     }
 
+    /**
+     * For getting the list of all the nodes of the graph
+     * @return a List of all the Nodes of the graph
+     */
     public List<Node> getAllNodes(){
         Set<Node> keys = adjEdList.keySet();
         List<Node> allNodes = new ArrayList<>(keys.size());
         allNodes.addAll(keys);
-        Collections.sort(allNodes);
+        Collections.sort(allNodes); // Sort for the sake of reproductibility
         return allNodes;
     }
 
@@ -190,8 +211,7 @@ public class Graph {
     }
 
     public int largestNodeId(){
-        Set<Node> nodes = adjEdList.keySet();
-        Iterator<Node> ite = nodes.iterator();
+        Iterator<Node> ite = getAllNodes().iterator();        
         int max = 0;
         while(ite.hasNext()){
             Node curr = ite.next();
@@ -202,9 +222,12 @@ public class Graph {
         return max;
     }
 
+    /**
+     * For knowing the smallest id used by a node in the graph
+     * @return an int 
+     */
     public int smallestNodeId(){
-        Set<Node> nodes = adjEdList.keySet();
-        Iterator<Node> ite = nodes.iterator();
+        Iterator<Node> ite = getAllNodes().iterator();
         int min = 0;
         while(ite.hasNext()){
             Node curr = ite.next();
@@ -219,6 +242,11 @@ public class Graph {
         return min;
     }
 
+    /**
+     * For getting a list without duplicates of the successor of node n
+     * @param n a Node
+     * @return a List of Node
+     */
     public List<Node> getSuccessors(Node n){
         List<Node> result = new ArrayList<>();
         List<Edge> allEdges = getOutEdges(n);
@@ -232,11 +260,20 @@ public class Graph {
         return result;
     }
 
+    /**
+     * For getting a list without duplicates of the successor of node n
+     * @param id an int
+     * @return a List of Node
+     */
     public List<Node> getSuccessors(int id ){
-        Node n = getNode(id);
-        return getSuccessors(n);
+        return getSuccessors(getNode(id));
     }
 
+    /**
+     * For getting a list with possible duplicates of the successors 
+     * @param n a Node
+     * @return a List of Node
+     */
     public List<Node> getSuccessorsMulti(Node n){
         List<Node> result = new ArrayList<>();
         List<Edge> allEdges = getOutEdges(n);
@@ -247,41 +284,87 @@ public class Graph {
         return result;
     }
 
+    /**
+     * For getting a list with possible duplicates of the successors 
+     * @param id an int
+     * @return a List of Node
+     */
     public List<Node> getSuccessorsMulti(int id){
-        Node n = getNode(id);
-        return getSuccessorsMulti(n);
+        return getSuccessorsMulti(getNode(id));
     }
 
+    /**
+     * For knowing whether nodes u and v are adjacent in the graph
+     * @param u a Node 
+     * @param v a Node
+     * @return true if u and v are adjacent, false else
+     */
     public boolean adjacent(Node u, Node v){
         return existsEdge(u, v);
     }
 
+    /**
+     * For knowing whether nodes u and v are adjacent in the graph
+     * @param u an int 
+     * @param v an int
+     * @return true if u and v are adjacent, false else
+     */
     public boolean adjacent(int u, int v){
         return existsEdge(u, v);
     }
 
+    /**
+     * for knowing the in-degree of node n. 
+     * @param n a Node
+     * @return an int
+     */
     public int inDegree(Node n){
         return getInEdges(n).size();
     }
 
+    /**
+     * for knowing the in-degree of node n. 
+     * @param n an int
+     * @return an int
+     */
     public int inDegree(int n){
         return getInEdges(n).size();
     }
 
+    /**
+     * for knowing the out-degree of node n. 
+     * @param n a Node
+     * @return an int
+     */
     public int outDegree(Node n){
         return getOutEdges(n).size();
     }
 
+    /**
+     * for knowing the out-degree of node n. 
+     * @param n an int
+     * @return an int
+     */
     public int outDegree(int n){
         return getOutEdges(n).size();
     }
 
+    /**
+     * for knowing the degree of node n. 
+     * @param n a Node
+     * @return an int
+     */
     public int degree(Node n){
-        return getOutEdges(n).size() + getInEdges(n).size();
+        return getIncidentEdges(n).size();
     }
 
+    /**
+     * for knowing the degree of node n. 
+     * @param n an int
+     * @return an int
+     */
     public int degree(int n){
-        return getOutEdges(n).size() + getInEdges(n).size();
+        return getIncidentEdges(n).size();
     }
 
     /**************************
@@ -636,19 +719,25 @@ public class Graph {
      *                        *
      **************************/
 
+     /**
+      * for obtaining a representation of the graph in the SA (successor array) formalism
+      * For every nodes, iterate through its adjacency edge list, and for each edge,
+      * add the @to Node id in the result array
+      * After checking every edge of a node, simply add a 0 in the result array
+      * @return an array of int
+      */
     public int[] toSuccessorArray(){
         int[] result = new int[nbEdges() + nbNodes()];
-        int compteur = 0;
+        int count = 0;
         for (Node curr : getAllNodes()) {
-            System.out.println("Node : " + curr.getId());
-            List<Edge> successors = adjEdList.get(curr);
+            List<Edge> successors = getOutEdges(curr);
             Iterator<Edge> iteEdge = successors.iterator();
             while(iteEdge.hasNext()){
-                result[compteur] = iteEdge.next().to().getId();
-                compteur++;
+                result[count] = iteEdge.next().to().getId();
+                count++;
             }
-            result[compteur] = 0;
-            compteur++;
+            result[count] = 0;
+            count++;
         }
 
         if(dev){
@@ -663,6 +752,14 @@ public class Graph {
         return result;
     }
 
+    /**
+     * for obtaining a representation of the graph as an adjacency matrix. Multigraphs are
+     * allowed, so the elements in the matrix may be greater than 1, indicating the number of edges between any two
+     * nodes. Also graphs with self-loops are allowed, thus allowing nonzero diagonal elements
+     * The method consist to iterate through every edge of the graph and increment by one the number 
+     * at the position [from-1][to-1] of the matrix
+     * @return a matrix of int
+     */
     public int[][] toAdjMatrix(){
         int[][] adjMatrix = new int[nbNodes()][nbNodes()];
         for (Edge e : getAllEdges()){
@@ -680,6 +777,10 @@ public class Graph {
         return adjMatrix;
     }
 
+    /**
+     * for computing in a new graph the reverse (G−1) of the graph
+     * @return a Graph
+     */
     public Graph getReverse(){
         Graph reverse = new Graph();
 
@@ -694,21 +795,30 @@ public class Graph {
         return reverse;
     }
 
+    /**
+     * for computing in a new graph the transitive closure of the graph
+     * https://en.wikipedia.org/wiki/Transitive_closure
+     * For each node 'u' of the graph the algorithm do a traversal and every
+     * encountered node 'v' becomes a destination of the node u (an edge from u to v is added)
+     * @return a Graph
+     */
     public Graph getTransitiveClosure(){
         Graph transClosure = new Graph();
 
-        for (Node origin : getAllNodes()){
+        for (Node u : getAllNodes()){
             List<Node> visited = new ArrayList<>();
             Stack<Node> toVisit = new Stack<>();
-            toVisit.add(origin);
-            transClosure.addNode(origin.getId());
+            toVisit.add(u);
+            transClosure.addNode(u.getId());
             while (!toVisit.isEmpty()) {
                 Node current = toVisit.pop();
                 if(!visited.contains(current)){
-                    for (Edge e : adjEdList.get(current)){
-                        transClosure.addEdge(origin.getId(), e.to().getId());
-                        toVisit.remove(e.to());
-                        toVisit.add(e.to());
+                    for (Edge v : getOutEdges(current)){ // here 'v' is an edge but the v from the algorithm is actually the @to of that edge  
+                        if(!transClosure.existsEdge(u.getId(), v.to().getId())){
+                            transClosure.addEdge(u.getId(), v.to().getId());
+                            toVisit.remove(v.to());
+                            toVisit.add(v.to());
+                        }
                     }
                     visited.add(current);
                 }
@@ -718,22 +828,25 @@ public class Graph {
         return transClosure;
     }
 
+    /**
+     * for knowing if this is a multi-graph (i.e. it has at least one multi-edge) or not
+     * @return true if this graph is a multi-graph, false else
+     */
     public boolean isMultiGraph(){
-        List<Edge> allEdges = new ArrayList<>();
+        List<Edge> visited = new ArrayList<>();
         for(Edge e : getAllEdges()){
-            Edge newEdge = new Edge(e.from(), e.to(), this);
-            if(allEdges.contains(newEdge)){
+            if(visited.contains(e)){
                 return true;
             }
-            allEdges.add(newEdge);
+            visited.add(e);
         }
         return false;
     }
 
-    public boolean isSimpleGraph(){
-        return !(isMultiGraph() || hasSelfLoops());
-    }
-
+    /**
+     * for knowing if this has self-loops or not
+     * @return true if this graph has self loops, false else
+     */
     public boolean hasSelfLoops(){
         for(Edge e : getAllEdges()){
             if(e.from().equals(e.to())){
@@ -743,22 +856,31 @@ public class Graph {
         return false;
     }
 
+    /**
+     * for knowing if this is a simple graph (i.e. it has neither self-loop nor multi-edge) or not
+     * @return true if this graph is a simple graph, false else
+     */
+    public boolean isSimpleGraph(){
+        return !(isMultiGraph() || hasSelfLoops());
+    }
+
+    /**
+     * for transforming the (possibly) multi-graph this into a simple one, by removing its
+     * self-loops and multi-edges
+     * The algorithm is an iteration over every edge, if the from and to are equal it is deleted
+     * and if 
+     * @return a Graph 
+     */
     public Graph toSimpleGraph(){
         Graph result = this.copy();
         List<Edge> visited = new ArrayList<>();
-        boolean delete = false;
+        //boolean delete = false;
         for(Edge e : result.getAllEdges()){
             if(e.to() == e.from()){
                 result.removeEdge(e);
             }else{
-                for(Edge e1 : visited){
-                    if(e.from() == e1.from() && e.to() == e1.to()){
-                        result.removeEdge(e);
-                        delete = true;
-                    }
-                }
-                if(delete){
-                    delete = false;
+                if(visited.contains(e)){
+                    result.removeEdge(e);
                 }else{
                     visited.add(e);
                 }
@@ -767,6 +889,10 @@ public class Graph {
         return result;
     }
 
+    /**
+     * to get a copy of this graph into a new graph
+     * @return a Graph
+     */
     public Graph copy(){
         Graph copy = new Graph();
 
@@ -788,6 +914,10 @@ public class Graph {
      *                        *
      **************************/
 
+     /**
+      * for getting a Depth-First Search traversal of the graph
+      * @return the list of visited node in DFS order
+      */
     public List<Node> getDFS(){
         if(getAllNodes().isEmpty()){
             return null;
@@ -795,6 +925,18 @@ public class Graph {
         return getDFS(getAllNodes().get(0));
     }
 
+    /**
+     * for getting a Depth-First Search traversal of the graph, starting from node u
+     * The algorithm is not recursive 
+     * It uses the LIFO Stack toVisit and a list of visited nodes
+     * It first adds all the nodes in decreasing order in toVisit
+     * Then while toVisit is not empty, it pops the node on top,
+     * put it in the visited list, then for each out-edge
+     * it takes the node @to and if it is not already visited, it gets 
+     * pushed to the top of the toVisit stack
+     * @param u the starting Node
+     * @return the list of visited node in DFS order
+     */
     public List<Node> getDFS(Node u){
         if(u == null){
             return null;
@@ -809,11 +951,11 @@ public class Graph {
         while (!toVisit.isEmpty()) {
             Node current = toVisit.pop();
             visited.add(current);
-            List<Edge> li = getEdges(current, u);
-            li.sort(Comparator.reverseOrder());
+            List<Edge> li = getOutEdges(current);
+            li.sort(Comparator.reverseOrder()); // Reproducibility
             for(Edge e : li){
                 if(!visited.contains(e.to())){
-                    // Put e.to() to the top of the toVisit stack
+                    // Push e.to() to the top of the toVisit stack
                     toVisit.remove(e.to());
                     toVisit.add(e.to());
                 }
@@ -822,18 +964,37 @@ public class Graph {
         return visited;
     }
 
+    /**
+     * for getting a Depth-First Search traversal of the graph, starting from node u
+     * @param u an int (the starting Node)
+     * @return the list of visited node in DFS order
+     */
     public List<Node> getDFS(int u){
-        return getDFS(this.getNode(u));
+        return getDFS(getNode(u));
     }
 
+    /**
+     * for getting a Breadth-First Search traversal of the graph
+     * @return the list of visited node in BFS order
+     */
     public List<Node> getBFS() {
         return getBFS(getAllNodes().get(0));
     }
 
+    /**
+     * for getting a Breadth-First Search traversal of the graph, starting from node u
+     * @param u the starting Node
+     * @return the list of visited node in BFS order
+     */
     public List<Node> getBFS(Node u) {
         return getBFS(u, new ArrayList<>());
     }
 
+    /**
+     * for getting a Breadth-First Search traversal of the graph, starting from node u
+     * @param u an int (the starting Node)
+     * @return the list of visited node in BFS order
+     */
     public List<Node> getBFS(int u) {
         return getBFS(getNode(u));
     }
@@ -864,6 +1025,16 @@ public class Graph {
         return visited;
     }
 
+    /**
+     * Get a detailled DFS : characterizing the nodes by their colour (white, gray, black ); 
+     * their predecessor in the traversal; their discovery and finish timestamps;
+     * the edges by their type (tree, backward, forward or cross edge).
+     * The algorithm here is the one from the lecture, a recursive DFS with colour, time and predecessor informations 
+     * @param nodeVisit a map of Node, NodeVisitInfo (NodeVisitInfo is a class that encapsulates the colour of a node 
+     * (of type enum NodeColour {WHITE, GRAY,BLACK}), its predecessor (of type Node), its discovery and finished timestamps (of type Integer))
+     * @param edgeVisit a map of Edge, EdgeVisitType (EdgeVisitType is simply an enum: {TREE, BACKWARD, FORWARD, CROSS})
+     * @return the list of visited node in DFS order
+     */
     public List<Node> getDFSWithVisitInfo(Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
         if(getAllNodes().isEmpty()){
             return null;
@@ -871,6 +1042,17 @@ public class Graph {
         return getDFSWithVisitInfo(getAllNodes().get(0), nodeVisit, edgeVisit);
     }
 
+    /**
+     * Get a detailled DFS starting from node u : characterizing the nodes by their colour (white, gray, black ); 
+     * their predecessor in the traversal; their discovery and finish timestamps;
+     * the edges by their type (tree, backward, forward or cross edge).
+     * The algorithm here is the one from the lecture, a recursive DFS with colour, time and predecessor informations 
+     * @param u the starting Node
+     * @param nodeVisit a map of Node, NodeVisitInfo (NodeVisitInfo is a class that encapsulates the colour of a node 
+     * (of type enum NodeColour {WHITE, GRAY,BLACK}), its predecessor (of type Node), its discovery and finished timestamps (of type Integer))
+     * @param edgeVisit a map of Edge, EdgeVisitType (EdgeVisitType is simply an enum: {TREE, BACKWARD, FORWARD, CROSS})
+     * @return the list of visited node in DFS order
+     */
     public List<Node> getDFSWithVisitInfo(Node u, Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
         if(u == null){
             return null;
@@ -882,16 +1064,24 @@ public class Graph {
         time = 0;
         List<Node> visited = new ArrayList<>();
         getDFSWithVisitInfo_Visit(u, visited, nodeVisit, edgeVisit);
+        time = 0;
         return visited;
     }
 
+    /**
+     * Function used for recursivity in the detailled dfs traversal
+     * @param u Current Node
+     * @param visited the Visited Node Array used as return in the main function
+     * @param nodeVisit the map of Node and NodeVisitInfo
+     * @param edgeVisit the map of Edge and EdgeVisitType
+     */
     public void getDFSWithVisitInfo_Visit(Node u, List<Node> visited, Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
         time++;
         nodeVisit.get(u).discovery = time;
         nodeVisit.get(u).colour = NodeColour.GRAY;
         visited.add(u);
 
-        List<Edge> li = adjEdList.get(u);
+        List<Edge> li = getOutEdges(u);
         li.sort(Comparator.reverseOrder());
         for(Edge e : li){
             switch(nodeVisit.get(e.to()).colour){
@@ -929,10 +1119,22 @@ public class Graph {
      *                        *
      **************************/
 
+     /**
+      * for importing a file in the restricted DOT format.
+      * The extension is assumed to be ’.gv’.
+      * @param filename a String. The absolute path to the DOT file with no extension
+      * @return a Graph
+      */
     public static Graph fromDotFile(String filename) {
         return fromDotFile(filename, ".gv");
     }
 
+    /**
+      * for importing a file in the restricted DOT format
+      * @param filename a String. The absolute path to the DOT file with no extension
+      * @param extension a String, The extension of the file
+      * @return a Graph
+      */
     public static Graph fromDotFile(String filename, String extension) {
         if(!(extension.equals(".gv") || extension.equals(".dot"))){
             return null;
@@ -999,6 +1201,10 @@ public class Graph {
         return result;
     }
 
+    /**
+     * for exporting the graph as a String in the DOT syntax
+     * @return a String
+     */
     public String toDotString() {
         String dotString = "digraph G {";
 
@@ -1021,14 +1227,25 @@ public class Graph {
         return dotString;
     }
 
-    public void toDotFile(String fileName) throws IOException {
-        toDotFile(fileName, ".gv");
+    /**
+     * for exporting the graph as a file in the DOT syntax
+     * The extension is assumed to be ’.gv’.
+     * @param filename a String. The absolute path to the DOT file with no extension
+     * @throws IOException if the writer is not able to create the file
+     */
+    public void toDotFile(String filename) throws IOException {
+        toDotFile(filename, ".gv");
     }
 
-    public void toDotFile(String fileName, String extension) {
-        fileName += extension;
+    /**
+     * for exporting the graph as a file in the DOT syntax
+     * @param filename a String. The absolute path to the DOT file with no extension
+     * @param extension a String, The extension of the file
+     */
+    public void toDotFile(String filename, String extension) {
+        filename += extension;
         try {
-            FileWriter dotFileWriter = new FileWriter(fileName);
+            FileWriter dotFileWriter = new FileWriter(filename);
             dotFileWriter.write(toDotString());
             dotFileWriter.close();
         } catch (IOException e) {

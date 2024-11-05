@@ -8,17 +8,6 @@ import java.util.List;
 public class TestGraphsPW2 {
 
 	public static void main(String[] args) throws IOException {
-		//Graph test = new Graph(2, 0, 3, 0, 5, 0, 1, 3, 6, 0, 6, 7, 8, 0, 9, 0, 9, 0, 9);
-		Graph test = new Graph(2, 3, 4, 0, 4, 0, 5, 0, 6, 7, 0, 6, 8, 0, 3, 0, 0, 0);
-		test.toDotFile("./test/firstGraph", ".dot");
-		System.out.print("DFS : [");
-		for (Node n : test.getDFS()) {
-			System.out.print(n.toString() + " ");
-		}
-		System.out.print("]\n");
-		//test.getTransitiveClosure().toDotFile("./test/firstGraph_TransClosure", ".dot");
-		//
-
 		System.out.println("************ PART 1. UNWEIGTED DIRECTED GRAPHS ***********************");
 		System.out.println("\n>>>>>>>> SIMPLE GRAPH >>>>>>>>>>>>>>>>>>>>>>>>");
 		System.out.println(">>>>>>>> Creating the subject example graph in G");
