@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * An extend of the class Graph to represent an undirected graph
@@ -293,7 +294,7 @@ public class UndirectedGraph extends Graph{
 
     @Override
     public String toDotString() {
-        String dotString = "digraph G {";
+        String dotString = "graph {";
 
         List<Node> usedNodes = getAllNodesInEdges();
 
@@ -378,7 +379,20 @@ public class UndirectedGraph extends Graph{
         return res;
     }
 
-    // Redefine Add Edge to have both edge and symmetric in the undirected
+    @Override
+    public boolean existsEdge(int u, int v) {
+        return super.existsEdge(u, v) && super.existsEdge(v, u);
+    }
+
+    @Override
+    public boolean existsEdge(Node u, Node v) {
+        return super.existsEdge(u, v) && super.existsEdge(v, u);
+    }
+
+    @Override
+    public boolean existsEdge(Edge e) {
+        return super.existsEdge(e) && super.existsEdge(e.to(), e.from());
+    }
 
     @Override
     public UndirectedGraph getTransitiveClosure() {
@@ -392,12 +406,12 @@ public class UndirectedGraph extends Graph{
             while (!toVisit.isEmpty()) {
                 Node current = toVisit.pop();
                 if(!visited.contains(current)){
-                    for (Edge v : getOutEdges(current)){ // here 'v' is an edge but the v from the algorithm is actually the @to of that edge  
+                    for (Edge v : getOutEdges(current.getId())){ // here 'v' is an edge but the v from the algorithm is actually the @to of that edge 
                         if(!transClosure.existsEdge(u.getId(), v.to().getId())){
                             transClosure.addEdge(u.getId(), v.to().getId());
-                            toVisit.remove(v.to());
-                            toVisit.add(v.to());
                         }
+                        toVisit.remove(v.to());
+                        toVisit.add(v.to());
                     }
                     visited.add(current);
                 }
