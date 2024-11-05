@@ -76,7 +76,7 @@ public class Graph {
      * @return the number of nodes in the graph
      */
     public int nbNodes(){
-        return getAllEdges().size();
+        return getAllNodes().size();
     }
 
     /**
