@@ -683,13 +683,15 @@ public class Graph {
 
      /**
       * for obtaining a representation of the graph in the SA (successor array) formalism
+      * For every nodes, iterate through its adjacency edge list, and for each edge,
+      * add the @to Node id in the result array
+      * After checking every edge of a node, simply add a 0 in the result array
       * @return an array of int
       */
     public int[] toSuccessorArray(){
         int[] result = new int[nbEdges() + nbNodes()];
         int count = 0;
         for (Node curr : getAllNodes()) {
-            System.out.println("Node : " + curr.getId());
             List<Edge> successors = adjEdList.get(curr);
             Iterator<Edge> iteEdge = successors.iterator();
             while(iteEdge.hasNext()){
@@ -714,8 +716,10 @@ public class Graph {
 
     /**
      * for obtaining a representation of the graph as an adjacency matrix. Multigraphs are
-     *  allowed, so the elements in the matrix may be greater than 1, indicating the number of edges between any two
-     *  nodes. Also graphs with self-loops are allowed, thus allowing nonzero diagonal elements
+     * allowed, so the elements in the matrix may be greater than 1, indicating the number of edges between any two
+     * nodes. Also graphs with self-loops are allowed, thus allowing nonzero diagonal elements
+     * The method consist to iterate through every edge of the graph and increment by one the number 
+     * at the position [from-1][to-1] of the matrix
      * @return a matrix of int
      */
     public int[][] toAdjMatrix(){
@@ -769,9 +773,11 @@ public class Graph {
                 Node current = toVisit.pop();
                 if(!visited.contains(current)){
                     for (Edge e : adjEdList.get(current)){
-                        transClosure.addEdge(origin.getId(), e.to().getId());
-                        toVisit.remove(e.to());
-                        toVisit.add(e.to());
+                        if(!transClosure.existsEdge(origin.getId(), e.to().getId())){
+                            transClosure.addEdge(origin.getId(), e.to().getId());
+                            toVisit.remove(e.to());
+                            toVisit.add(e.to());
+                        }
                     }
                     visited.add(current);
                 }
