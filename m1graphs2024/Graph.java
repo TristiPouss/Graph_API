@@ -49,6 +49,10 @@ public class Graph {
 
     /* API */
 
+    public Map<Node, List<Edge>> getList(){
+        return adjEdList;
+    }
+
     /**************************
      *                        *
      * Nodes related methods  *
@@ -169,6 +173,19 @@ public class Graph {
         List<Node> allNodes = new ArrayList<>(keys.size());
         allNodes.addAll(keys);
         Collections.sort(allNodes);
+        return allNodes;
+    }
+
+    public List<Node> getAllNodesInEdges(){
+        List<Node> allNodes = new ArrayList<>();
+        for(Edge e : getAllEdges()){
+            if(!allNodes.contains(e.to())){
+                allNodes.add(e.to());
+            }
+            if(!allNodes.contains(e.from())){
+                allNodes.add(e.from());
+            }
+        }
         return allNodes;
     }
 
@@ -985,9 +1002,13 @@ public class Graph {
     public String toDotString() {
         String dotString = "digraph G {";
 
+        List<Node> usedNodes = getAllNodesInEdges();
+
         for (Node n : getAllNodes()){
             if(adjEdList.get(n).isEmpty()){
-                dotString += "\n\t" + n;
+                if(!usedNodes.contains(n)){
+                    dotString += "\n\t" + n;
+                }
             }else{
                 for (Edge e : getOutEdges(n)){
                     dotString += "\n\t" + e.from() + " -> " + e.to();
