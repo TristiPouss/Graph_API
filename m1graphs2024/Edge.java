@@ -113,7 +113,7 @@ public class Edge implements Comparable<Edge>{
     /* API */
 
     /**
-     * Get node @from
+     * Getter for from
      * @return a Node
      */
     public Node from(){
@@ -121,7 +121,7 @@ public class Edge implements Comparable<Edge>{
     }
 
     /**
-     * Get node @to
+     * Getter for to
      * @return a Node
      */
     public Node to(){
@@ -163,11 +163,6 @@ public class Edge implements Comparable<Edge>{
 
     /* Overrides */
 
-    /**
-     * Check if current Edge is equal to another object
-     * @param obj another object
-     * @return true if the object is an edge, has the same Node @from and @to and the same weight if weighted
-     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != this.getClass()) return false;
@@ -178,9 +173,6 @@ public class Edge implements Comparable<Edge>{
                 ((!isWeighted() && !other.isWeighted()) || Objects.equals(weight, other.weight));
     }
 
-    /**
-     * 
-     */
     @Override
     public int hashCode() {
         int hash = 5;
@@ -191,11 +183,6 @@ public class Edge implements Comparable<Edge>{
         return hash;
     }
 
-    /**
-     * 
-     * @param o
-     * @return
-     */
 	@Override
 	public int compareTo(Edge o) {
         if (from.getId() != o.from.getId()) return from.getId() - o.from.getId();
@@ -209,5 +196,4 @@ public class Edge implements Comparable<Edge>{
         return from + "->" + to;
     }
 
-    
 }
