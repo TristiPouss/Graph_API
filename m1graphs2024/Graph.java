@@ -11,6 +11,7 @@ public class Graph {
      * The Adjencent Edge List implemented as a Map
      */
     private Map<Node, List<Edge>> adjEdList;
+    private String name;
 
     /* Constructors */
 
@@ -18,6 +19,11 @@ public class Graph {
      * Constructor for empty graph
      */
     public Graph() {
+        adjEdList = new HashMap<>();
+    }
+
+    public Graph(String name) {
+        this.name = name;
         adjEdList = new HashMap<>();
     }
     
@@ -462,7 +468,9 @@ public class Graph {
      */
     public List<Edge> getOutEdges(Node n){
         if (adjEdList.get(n) == null) return new ArrayList<>();
-        return adjEdList.get(n);
+        List<Edge> result = adjEdList.get(n);
+        Collections.sort(result);
+        return result;
     }
 
     /**
@@ -474,7 +482,9 @@ public class Graph {
         if (getNode(n) == null) return new ArrayList<>();
         Node node = getNode(n);
         if (adjEdList.get(node) == null) return new ArrayList<>();
-        return adjEdList.get(node);
+        List<Edge> result = adjEdList.get(node);
+        Collections.sort(result);
+        return result;
     }
 
     /**
@@ -489,6 +499,7 @@ public class Graph {
                 if (e.to() == n) res.add(e);
             }
         }
+        Collections.sort(res);
         return res;
     }
 
@@ -507,6 +518,7 @@ public class Graph {
                 if (e.to() == node) res.add(e);
             }
         }
+        Collections.sort(res);
         return res;
     }
 
@@ -798,15 +810,41 @@ public class Graph {
     }
 
     public List<Node> getBFS() {
-        return null;
+        return getBFS(getAllNodes().get(0));
     }
 
     public List<Node> getBFS(Node u) {
-        return null;
+        return getBFS(u, new ArrayList<>());
     }
 
     public List<Node> getBFS(int u) {
-        return null;
+        return getBFS(getNode(u));
+    }
+
+    public List<Node> getBFS(Node u, List<Node> visited) {
+        visited.add(u);
+        List<Node> next = new ArrayList<>();
+        next.add(u);
+        while(!next.isEmpty()){
+            Node curr = next.get(0);
+            next.remove(0);
+            List<Edge> neighbor = adjEdList.get(curr);
+            for (Edge e : neighbor) {
+                if(!visited.contains(e.to())){
+                    visited.add(e.to());
+                    next.add(e.to());
+                }
+            }
+        }
+
+        if(visited.size() < getAllNodes().size()){
+            for (Node n1 : getAllNodes()) {
+                if(!visited.contains(n1)){
+                    visited = getBFS(n1, visited);
+                }
+            }
+        }
+        return visited;
     }
 
     public List<Node> getDFSWithVisitInfo(Map<Node, NodeVisitInfo> nodeVisit, Map<Edge, EdgeVisitType> edgeVisit) {
@@ -879,32 +917,83 @@ public class Graph {
     }
 
     public static Graph fromDotFile(String filename, String extension) {
-        try {
-            File dotFile = new File(filename + extension);
-            Scanner myReader = new Scanner(dotFile);
-            while (myReader.hasNextLine()) {
-              String data = myReader.nextLine();
-              System.out.println(data);
-            }
-            myReader.close();
-          } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-          }
+        if(!(extension.equals(".gv") || extension.equals(".dot"))){
+            return null;
+        }
+        Graph result = null;
+        File newFile = new File("./m1graphs2024/dotGraphsTestPW2/" + filename + extension);
+        try{
+            Scanner parser = new Scanner(newFile);
+            while(parser.hasNextLine()){
+                String curr = parser.nextLine().trim();
 
-        return null;
+                if(curr.charAt(0) == '#' || curr.isEmpty()){
+                    continue;
+                }
+
+                String[] token = curr.split("\\s+");
+                if(curr.contains("{")){
+                    if(token.length == 3){
+                        System.out.println("Passe");
+                        if(Objects.equals(token[2], "{")){
+                            if(token[0].equals("digraph")){
+                                result = new Graph(token[1]);
+                            }else{
+                                return null;
+                            }
+                        }
+                    }else{
+                        if(token[0].equals("digraph")){
+                            result = new Graph();
+                        }else{
+                            return null;
+                        }
+                    }
+                }
+
+                if(token[token.length - 1].equals("}")){
+                    return result;
+                }
+                
+                if(result != null){
+                    if(token.length >= 3){
+                        if(token[1].equals("->")){
+                            int node1 = Integer.parseInt(token[0]);
+                            int node2 = Integer.parseInt(token[2]);
+                            result.addNode(node1);
+                            result.addNode(node2);
+
+                            if(token.length > 3){
+                                result.addEdge(node1, node2, Integer.parseInt(token[token.length - 1].split("=")[1].replace("]", "")));
+                            }else{
+                                result.addEdge(node1, node2);
+                            }
+                        }
+                    }else{
+                        if(token.length == 1 && token[0].matches("[0-9]+")){
+                            result.addNode(Integer.parseInt(token[0]));
+                        }
+                    }
+                }
+            }
+        }catch(FileNotFoundException f){
+            throw new RuntimeException(f);
+        }
+        return result;
     }
 
     public String toDotString() {
         String dotString = "digraph G {";
 
         for (Node n : getAllNodes()){
-            dotString += "\n\t" + n;
-        }
-
-        for (Edge e : getAllEdges()){
-            dotString += "\n\t" + e.from() + " -> " + e.to();
-            if(e.isWeighted()) dotString += " [label=" + e.getWeight() + ", len=" + e.getWeight() + "]";
+            if(adjEdList.get(n).isEmpty()){
+                dotString += "\n\t" + n;
+            }else{
+                for (Edge e : getOutEdges(n)){
+                    dotString += "\n\t" + e.from() + " -> " + e.to();
+                    if(e.isWeighted()) dotString += " [label=" + e.getWeight() + ", len=" + e.getWeight() + "]";
+                }
+            }
         }
 
         dotString += "\n}";
