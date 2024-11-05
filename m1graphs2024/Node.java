@@ -193,21 +193,21 @@ public class Node implements Comparable<Node>{
             return false;
         }
         Node other = (Node) obj;
-        return this.id == other.id && this.graphHolder.equals(other.graphHolder);
+        return this.id == other.getId() && this.graphHolder.equals(other.getGraph());
     }
 
     @Override
     public int hashCode(){
         int hash = 1;
-        hash = hash * 17 * this.id;
-        hash = hash * 17 * (this.graphHolder != null ? this.graphHolder.hashCode() : 0);
+        hash = hash * 17 * id;
+        hash = hash * 17 * (graphHolder != null ? graphHolder.hashCode() : 0);
         return hash;
     }
 
 
     @Override
     public int compareTo(Node o) {
-        return id - o.id;
+        return id - o.getId();
     }
 
     @Override
