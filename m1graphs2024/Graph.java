@@ -814,11 +814,13 @@ public class Graph {
                 Node current = toVisit.pop();
                 if(!visited.contains(current)){
                     for (Edge v : getOutEdges(current)){ // here 'v' is an edge but the v from the algorithm is actually the @to of that edge  
-                        if(!transClosure.existsEdge(u.getId(), v.to().getId())){
-                            transClosure.addEdge(u.getId(), v.to().getId());
+                        if(u.getId() != v.to().getId()){
+                            if(!transClosure.existsEdge(u.getId(), v.to().getId())){
+                                transClosure.addEdge(u.getId(), v.to().getId());
+                            }
+                            toVisit.remove(v.to());
+                            toVisit.add(v.to());
                         }
-                        toVisit.remove(v.to());
-                        toVisit.add(v.to());
                     }
                     visited.add(current);
                 }
