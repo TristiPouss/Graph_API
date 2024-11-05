@@ -25,7 +25,6 @@ public class UndirectedGraph extends Graph{
 
     /**
      * Constructor for empty graph with a name
-     * 
      * @param name The name for the graph
      */
     public UndirectedGraph(String name) {
@@ -532,6 +531,12 @@ public class UndirectedGraph extends Graph{
         return transClosure;
     }
 
+    /**
+      * for importing a file in the restricted DOT format
+      * The base extension is assumed to be .gv
+      * @param filename a String. The absolute path to the DOT file with no extension
+      * @return a Graph
+      */
     public static UndirectedGraph fromDotFile(String filename) {
         return fromDotFile(filename, ".gv");
     }

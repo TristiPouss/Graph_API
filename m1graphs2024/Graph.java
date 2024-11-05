@@ -35,6 +35,10 @@ public class Graph {
         adjEdList = new HashMap<>();
     }
 
+    /**
+     * Constructor for empty graph with a name
+     * @param name the name of the graph
+     */
     public Graph(String name) {
         this.name = name;
         adjEdList = new HashMap<>();
@@ -62,6 +66,10 @@ public class Graph {
 
     /* API */
 
+    /**
+     * Getter for AdjEdList
+     * @return the adjEdList Map of Node : List Edge
+     */
     public Map<Node, List<Edge>> getList(){
         return adjEdList;
     }
@@ -197,6 +205,10 @@ public class Graph {
         return allNodes;
     }
 
+    /**
+     * Get the list of all the Nodes in every edges of the graph 
+     * @return the list of all the nodes
+     */
     public List<Node> getAllNodesInEdges(){
         List<Node> allNodes = new ArrayList<>();
         for(Edge e : getAllEdges()){
@@ -210,6 +222,10 @@ public class Graph {
         return allNodes;
     }
 
+    /**
+     * Get the largest node Id
+     * @return an int
+     */
     public int largestNodeId(){
         Iterator<Node> ite = getAllNodes().iterator();        
         int max = 0;
@@ -1001,6 +1017,13 @@ public class Graph {
         return getBFS(getNode(u));
     }
 
+    /**
+     * for getting a Breadth-First Search traversal of the graph, starting from node u
+     * This is the recursive function for BFS
+     * @param u an int (the starting Node)
+     * @param visited the list of visited nodes
+     * @return the list of visited node in BFS order
+     */
     public List<Node> getBFS(Node u, List<Node> visited) {
         visited.add(u);
         List<Node> next = new ArrayList<>();
