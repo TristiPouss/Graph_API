@@ -3,6 +3,7 @@ import java.util.Objects;
 /**
  * The class Edge aims at physically coding edges as object
  * @author Tristan de Saint Gilles
+ * @author Renaud Joffrin
  */
 public class Edge implements Comparable<Edge>{
 
@@ -35,6 +36,7 @@ public class Edge implements Comparable<Edge>{
      * Constructor for a non weighted Edge
      * @param from the Node where it begins
      * @param to the Node where it ends
+     * @param graphHolder the Graph of this Edge
      * @throws IllegalArgumentException if any of the arguments are null 
      * or if the graph of @from is different from the one of @to
      */
@@ -55,6 +57,7 @@ public class Edge implements Comparable<Edge>{
      * @param from the Node where it begins
      * @param to the Node where it ends
      * @param weight the weight of the Edge
+     * @param graphHolder the Graph of this Edge
      * @throws IllegalArgumentException if any of the arguments are null 
      * or if the graph of @from is different from the one of @to
      */
@@ -74,6 +77,7 @@ public class Edge implements Comparable<Edge>{
      * Constructor by ids for a non-weighted Edge
      * @param from the Node where it begins
      * @param to the Node where it ends
+     * @param graphHolder the Graph of this Edge
      * @throws IllegalArgumentException if any of the arguments are null 
      * or if the graph of @from is different from the one of @to
      */
@@ -94,6 +98,7 @@ public class Edge implements Comparable<Edge>{
      * @param from the Node where it begins
      * @param to the Node where it ends
      * @param weight the weight of the Edge
+     * @param graphHolder the Graph of this Edge
      * @throws IllegalArgumentException 
      * if any of the arguments are null or
      * if the graph of @from is different from the one of @to

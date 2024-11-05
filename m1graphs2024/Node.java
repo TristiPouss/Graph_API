@@ -1,11 +1,15 @@
 import java.util.*;
 
+/**
+ * The class Node is used to define the Node of a Graph
+ * @author Tristan de Saint Gilles
+ * @author Renaud Joffrin
+ */
 public class Node implements Comparable<Node>{
 
     /* Attributes */
 
     /**
-     * 
      * id is an identifier
      * Two nodes in the same graph can't have the same id
      * Two nodes in different graphs can have the same id 
@@ -13,13 +17,11 @@ public class Node implements Comparable<Node>{
     private final int id;
 
     /**
-     * 
      * A node is not obligated to have a name, it can have it or not depend of the constructor 
      */
     private String name;
 
     /**
-     * 
      * graphHolder is a reference to the graph where the node belongs
      */
     private final Graph graphHolder;
@@ -28,10 +30,8 @@ public class Node implements Comparable<Node>{
 
     /**
      * Constructor for a node without a name
-     * 
      * @param id            The id of the Node
-     * @param graphHolder   The reference to the graph where the node will belongs
-     * 
+     * @param graphHolder   The reference to the graph where the node belongs
      * If the graph already contain a Node with this id the node isn't created. 
      * If the graph don't have the id, the programm create a node and add it to the graph
      */
@@ -42,11 +42,9 @@ public class Node implements Comparable<Node>{
     
     /**
      * Constructor for a node with a name
-     * 
-     * @param id
-     * @param name
-     * @param graphHolder
-     * 
+     * @param id            The id of the Node
+     * @param name          The name of the node
+     * @param graphHolder   The reference to the graph where the node belongs
      * If the graph already contain a Node with this id the node isn't created. 
      * If the graph don't have the id, the programm create a node and add it to the graph
      */
@@ -58,9 +56,7 @@ public class Node implements Comparable<Node>{
 
     /**
      * Constructor for a node without a name and the id specified
-     * 
      * @param graphHolder
-     * 
      * Create a node in the graph with the addition between the largest node id in the graph and 1 as the id.
      */
     public Node(Graph graphHolder){
@@ -88,7 +84,6 @@ public class Node implements Comparable<Node>{
 
     /**
      * The goal is getting a list without duplicates of the successors (or neighbours in the undirected case) of node this.
-     * 
      * @return a list of all the successors without duplicate
      */
     public List<Node> getSuccessors(){
@@ -97,7 +92,6 @@ public class Node implements Comparable<Node>{
 
     /**
      * The goal is getting a list with possible duplicates of the successors (or neighbours in the undirected case) of node this. 
-     * 
      * @return a list of all the successors with possible duplicates
      */
     public List<Node> getSuccessorsMulti(){
@@ -107,7 +101,7 @@ public class Node implements Comparable<Node>{
     /**
      * Test if a Node is adjacent to this node. 
      * @param u is a node 
-     * @return
+     * @return true if u is adjacent to this node, false else
      */
     public boolean adjacent(Node u){
         return this.graphHolder.adjacent(this, u);
@@ -115,8 +109,8 @@ public class Node implements Comparable<Node>{
 
     /**
      * Test if a Node is adjacent to this node. 
-     * @param u is the id of a node 
-     * @return
+     * @param id is the id of a node 
+     * @return true if u is adjacent to this node, false else
      */
     public boolean adjacent(int id){
         return this.graphHolder.adjacent(this.id, id);

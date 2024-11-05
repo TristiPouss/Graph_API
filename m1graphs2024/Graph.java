@@ -1,8 +1,21 @@
 import java.io.*;
 import java.util.*;
 
+/**
+ * The class Graph is a representation of a graph with an Adjacency Edge list
+ * @author Tristan de Saint Gilles
+ * @author Renaud Joffrin
+ */
 public class Graph {
+    /**
+     * Variable used in developpement to print debug information or anything related to testing
+     * @hidden SET TO FALSE BEFORE EXPORT
+     */
     public static final boolean dev = false; 
+    
+    /**
+     * Int used to have a reference time in the DFS With Infos function
+     */
     static int time = 0;
 
     /* Attributes */
@@ -1111,11 +1124,11 @@ public class Graph {
     /**
      * for exporting the graph as a file in the DOT syntax
      * The extension is assumed to be ’.gv’.
-     * @param fileName a String. The absolute path to the DOT file with no extension
+     * @param filename a String. The absolute path to the DOT file with no extension
      * @throws IOException if the writer is not able to create the file
      */
-    public void toDotFile(String fileName) throws IOException {
-        toDotFile(fileName, ".gv");
+    public void toDotFile(String filename) throws IOException {
+        toDotFile(filename, ".gv");
     }
 
     /**
@@ -1123,10 +1136,10 @@ public class Graph {
      * @param filename a String. The absolute path to the DOT file with no extension
      * @param extension a String, The extension of the file
      */
-    public void toDotFile(String fileName, String extension) {
-        fileName += extension;
+    public void toDotFile(String filename, String extension) {
+        filename += extension;
         try {
-            FileWriter dotFileWriter = new FileWriter(fileName);
+            FileWriter dotFileWriter = new FileWriter(filename);
             dotFileWriter.write(toDotString());
             dotFileWriter.close();
         } catch (IOException e) {
