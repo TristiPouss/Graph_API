@@ -1,6 +1,12 @@
 import java.util.*;
 
+/**
+ * An extend of the class Graph to represent an undirected graph
+ * @author Tristan de Saint Gilles
+ * @author Renaud Joffrin
+ */
 public class UndirectedGraph extends Graph{
+
     /* Attributes */
 
     /*
@@ -25,11 +31,33 @@ public class UndirectedGraph extends Graph{
         super(sa);
     }
 
-    // Redefine Add Edge to have both edge and symmetric in the undirected
+    /* API */
 
     @Override
     public UndirectedGraph getTransitiveClosure() {
-        return (UndirectedGraph) super.getTransitiveClosure();
+        UndirectedGraph transClosure = new UndirectedGraph();
+
+        for (Node u : getAllNodes()){
+            List<Node> visited = new ArrayList<>();
+            Stack<Node> toVisit = new Stack<>();
+            toVisit.add(u);
+            transClosure.addNode(u.getId());
+            while (!toVisit.isEmpty()) {
+                Node current = toVisit.pop();
+                if(!visited.contains(current)){
+                    for (Edge v : getOutEdges(current)){ // here 'v' is an edge but the v from the algorithm is actually the @to of that edge  
+                        if(!transClosure.existsEdge(u.getId(), v.to().getId())){
+                            transClosure.addEdge(u.getId(), v.to().getId());
+                            toVisit.remove(v.to());
+                            toVisit.add(v.to());
+                        }
+                    }
+                    visited.add(current);
+                }
+            }
+        }
+
+        return transClosure;
     }
 
     public static UndirectedGraph fromDotFile(String filename) {
